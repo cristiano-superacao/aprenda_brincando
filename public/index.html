@@ -57,7 +57,7 @@
                 <!-- Estatísticas Financeiras -->
                 <section class="stats-section">
                     <h2>📊 Estatísticas:</h2>
-                    <div class="stats-grid">
+                    <div class="stats-grid-improved">
                         <div class="stat-item">
                             <div class="stat-icon">💰</div>
                             <div class="stat-info">
@@ -72,33 +72,35 @@
                                 <span class="stat-value" id="totalSpent">R$ 0,00</span>
                             </div>
                         </div>
-                        <div class="stat-item">
-                            <div class="stat-icon">💳</div>
-                            <div class="stat-info">
-                                <span class="stat-label">Sobra</span>
-                                <span class="stat-value" id="remaining">R$ 0,00</span>
-                            </div>
-                        </div>
                     </div>
                 </section>
             </div>
             
-            <!-- Informações do Jogador -->
-            <div class="player-info">
-                <div class="level-card">
-                    <div class="level-icon" id="levelIcon">🌱</div>
-                    <div class="level-details">
-                        <div class="level-name" id="levelName">Iniciante</div>
-                        <div class="level-number" id="levelNumber">Nível 1</div>
-                        <div class="points" id="points">0 Pontos</div>
+            <!-- Informações do Jogador Reorganizadas -->
+            <div class="player-info-improved">
+                <div class="main-stats-card">
+                    <div class="stat-group">
+                        <div class="stat-icon">🌱</div>
+                        <div class="stat-details">
+                            <div class="stat-title" id="levelName">Iniciante</div>
+                            <div class="stat-subtitle" id="levelNumber">Nível 1</div>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="balance-card">
-                    <div class="balance-icon">💰</div>
-                    <div class="balance-details">
-                        <div class="balance-label">Saldo</div>
-                        <div class="balance-value" id="balance">R$ 0,00</div>
+                    
+                    <div class="stat-group">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-details">
+                            <div class="stat-title">Saldo</div>
+                            <div class="stat-subtitle" id="balance">R$ 0,00</div>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-group">
+                        <div class="stat-icon">⭐</div>
+                        <div class="stat-details">
+                            <div class="stat-title">Pontos</div>
+                            <div class="stat-subtitle" id="points">0 Pontos</div>
+                        </div>
                     </div>
                 </div>
             </div>

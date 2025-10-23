@@ -487,7 +487,6 @@ class AprenderBrincando {
         // Atualizar estatísticas financeiras
         document.getElementById('initialMoney').textContent = `R$ ${this.initialMoney.toFixed(2)}`;
         document.getElementById('totalSpent').textContent = `R$ ${this.totalSpent.toFixed(2)}`;
-        document.getElementById('remaining').textContent = `R$ ${this.balance.toFixed(2)}`;
         
         // Atualizar experiência e vidas
         this.updateExperienceDisplay();
