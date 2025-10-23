@@ -1,33 +1,108 @@
 class AprenderBrincando {
     constructor() {
+        // Usar sistema de estado centralizado
+        this.state = window.gameState;
+        this.notifications = window.notificationSystem;
+        this.events = window.eventBus;
+        
+        // Propriedades locais
         this.currentUser = null;
-        this.balance = 0;
-        this.initialMoney = 0;
-        this.totalSpent = 0;
-        this.level = 1;
-        this.points = 0;
-        this.experience = 0;
-        this.experienceToNextLevel = 100;
-        this.lives = 3;
-        this.maxLives = 3;
-        this.difficulty = 'facil';
         this.products = [];
         this.cartItems = [];
         this.multiplayer = null;
         this.educationalAgent = null;
         this.quizActive = false;
         this.currentQuiz = null;
-        this.streakCount = 0;
+        this.currentSelection = null;
+        
+        // Inicializar
         this.init();
+        this.setupEventListeners();
     }
 
+    // Getters para estado centralizado
+    get balance() { return this.state.getState('balance'); }
+    get level() { return this.state.getState('level'); }
+    get points() { return this.state.getState('points'); }
+    get experience() { return this.state.getState('experience'); }
+    get lives() { return this.state.getState('lives'); }
+    get difficulty() { return this.state.getState('difficulty'); }
+    get streakCount() { return this.state.getState('streakCount') || 0; }
+    get initialMoney() { return this.state.getState('initialMoney') || 0; }
+    get totalSpent() { return this.state.getState('totalSpent') || 0; }
+    get maxLives() { return 3; }
+    get experienceToNextLevel() { 
+        return GameUtils.calculateExpForNextLevel(this.level);
+    }
+
+    // Setters para estado centralizado
+    set balance(value) { this.state.setState({ balance: value }); }
+    set level(value) { this.state.setState({ level: value }); }
+    set points(value) { this.state.setState({ points: value }); }
+    set experience(value) { this.state.setState({ experience: value }); }
+    set lives(value) { this.state.setState({ lives: value }); }
+    set difficulty(value) { this.state.setState({ difficulty: value }); }
+    set streakCount(value) { this.state.setState({ streakCount: value }); }
+    set initialMoney(value) { this.state.setState({ initialMoney: value }); }
+    set totalSpent(value) { this.state.setState({ totalSpent: value }); }
+
     async init() {
+        // Configurar observers para mudanças de estado
+        this.setupStateObservers();
+        
+        // Carregar dados e inicializar componentes
         await this.loadProducts();
-        this.setupEventListeners();
-        this.updateDisplay();
         await this.initializeUser();
         this.setupMultiplayer();
         this.setupEducationalAgent();
+        
+        // Atualizar display inicial
+        this.updateDisplay();
+        
+        console.log('🎮 Mercadinho do Cristhian inicializado!');
+    }
+
+    // Configurar observers para mudanças de estado
+    setupStateObservers() {
+        // Observer para mudanças de saldo
+        this.state.subscribe('balance', (newBalance, oldBalance) => {
+            this.updateBalanceDisplay();
+            if (newBalance !== oldBalance) {
+                this.events.emit('balanceChanged', { newBalance, oldBalance });
+            }
+        });
+
+        // Observer para mudanças de nível
+        this.state.subscribe('level', (newLevel, oldLevel) => {
+            this.updateLevelDisplay();
+            if (newLevel > oldLevel) {
+                this.events.emit('levelUp', { newLevel, oldLevel });
+            }
+        });
+
+        // Observer para mudanças de experiência
+        this.state.subscribe('experience', () => {
+            this.updateExperienceDisplay();
+            this.checkLevelUp();
+        });
+
+        // Observer para mudanças de vidas
+        this.state.subscribe('lives', (newLives) => {
+            this.updateLivesDisplay();
+            if (newLives <= 0) {
+                this.events.emit('gameOver');
+            }
+        });
+
+        // Observer para game over
+        this.events.on('gameOver', () => {
+            this.gameOver();
+        });
+
+        // Observer para level up
+        this.events.on('levelUp', (data) => {
+            this.handleLevelUp(data.newLevel);
+        });
     }
 
     // Configurar agente educativo
@@ -147,7 +222,7 @@ class AprenderBrincando {
                 <div class="product-info">
                     <span class="product-emoji">${product.emoji}</span>
                     <h3 class="product-name">${product.name}</h3>
-                    <p class="product-price">R$ ${product.price.toFixed(2)}</p>
+                    <p class="product-price">${GameUtils.formatCurrency(product.price)}</p>
                 </div>
             `;
 
@@ -218,16 +293,16 @@ class AprenderBrincando {
         await this.updateUserBalance();
         
         // Adicionar animação e feedback
-        this.showToast(`💰 Adicionado R$ ${value.toFixed(2)}!`, 'success');
+        this.showToast(`💰 Adicionado ${GameUtils.formatCurrency(value)}!`, 'success');
         this.addCartItem({
             type: 'money',
             value: value,
-            name: `R$ ${value.toFixed(2)}`,
+            name: GameUtils.formatCurrency(value),
             emoji: '💰'
         });
         
         // Registrar transação
-        await this.addTransaction('add_money', value, `Adicionado R$ ${value.toFixed(2)}`);
+        await this.addTransaction('add_money', value, `Adicionado ${GameUtils.formatCurrency(value)}`);
         
         this.updateDisplay();
         this.showMoneyLearning(value);
@@ -324,7 +399,7 @@ class AprenderBrincando {
                 itemElement.innerHTML = `
                     <span class="product-emoji">${item.emoji}</span>
                     <p>${item.name}</p>
-                    ${item.price ? `<p>R$ ${item.price.toFixed(2)}</p>` : ''}
+                    ${item.price ? `<p>${GameUtils.formatCurrency(item.price)}</p>` : ''}
                     <button class="remove-btn" onclick="game.removeCartItem(${index})">×</button>
                 `;
                 cartItems.appendChild(itemElement);
@@ -423,7 +498,7 @@ class AprenderBrincando {
                             </div>
                             <div style="text-align: right;">
                                 ${transaction.amount ? `<p style="color: ${transaction.type === 'add_money' ? '#48bb78' : '#e53e3e'}; font-weight: 600;">
-                                    ${transaction.type === 'add_money' ? '+' : '-'}R$ ${transaction.amount.toFixed(2)}
+                                    ${transaction.type === 'add_money' ? '+' : '-'}${GameUtils.formatCurrency(transaction.amount)}
                                 </p>` : ''}
                                 ${transaction.points_earned > 0 ? `<p style="color: #ed8936; font-size: 0.9rem;">+${transaction.points_earned} pontos</p>` : ''}
                             </div>
@@ -478,21 +553,44 @@ class AprenderBrincando {
         }
     }
 
-    // Atualizar display
+    // Atualizar display (refatorado)
     updateDisplay() {
-        document.getElementById('balance').textContent = `R$ ${this.balance.toFixed(2)}`;
-        document.getElementById('levelNumber').textContent = `Nível ${this.level}`;
-        document.getElementById('points').textContent = `${this.points} Pontos`;
-        
-        // Atualizar estatísticas financeiras
-        document.getElementById('initialMoney').textContent = `R$ ${this.initialMoney.toFixed(2)}`;
-        document.getElementById('totalSpent').textContent = `R$ ${this.totalSpent.toFixed(2)}`;
-        
-        // Atualizar experiência e vidas
+        this.updateBalanceDisplay();
+        this.updateLevelDisplay();
+        this.updatePointsDisplay();
+        this.updateStatsDisplay();
         this.updateExperienceDisplay();
-        
-        // Atualizar nome do nível
-        const levelNames = {
+        this.updateLivesDisplay();
+    }
+
+    // Métodos específicos de atualização (refatorados com utilitários DOM)
+    updateBalanceDisplay() {
+        GameUtils.safeUpdateElement('balance', GameUtils.formatCurrency(this.balance));
+    }
+
+    updateLevelDisplay() {
+        GameUtils.safeUpdateElement('levelNumber', `Nível ${this.level}`);
+        GameUtils.safeUpdateElement('levelName', this.getLevelName(this.level));
+        GameUtils.safeUpdateElement('levelIcon', this.getLevelIcon(this.level));
+    }
+
+    updatePointsDisplay() {
+        GameUtils.safeUpdateElement('points', GameUtils.formatPoints(this.points));
+    }
+
+    updateStatsDisplay() {
+        GameUtils.safeUpdateElement('initialMoney', GameUtils.formatCurrency(this.initialMoney));
+        GameUtils.safeUpdateElement('totalSpent', GameUtils.formatCurrency(this.totalSpent));
+    }
+
+    updateLivesDisplay() {
+        const livesDisplay = '❤️'.repeat(this.lives) + '🤍'.repeat(this.maxLives - this.lives);
+        GameUtils.safeUpdateElement('livesDisplay', livesDisplay);
+    }
+
+    // Obter nome do nível
+    getLevelName(level) {
+        const names = {
             1: 'Iniciante',
             2: 'Aprendiz',
             3: 'Intermediário',
@@ -500,8 +598,12 @@ class AprenderBrincando {
             5: 'Expert',
             6: 'Mestre'
         };
-        
-        const levelIcons = {
+        return names[Math.min(level, 6)] || 'Lendário';
+    }
+
+    // Obter ícone do nível
+    getLevelIcon(level) {
+        const icons = {
             1: '🌱',
             2: '🌿',
             3: '🌳',
@@ -509,26 +611,12 @@ class AprenderBrincando {
             5: '👑',
             6: '💎'
         };
-        
-        const levelName = levelNames[Math.min(this.level, 6)] || 'Lendário';
-        const levelIcon = levelIcons[Math.min(this.level, 6)] || '⭐';
-        
-        document.getElementById('levelName').textContent = levelName;
-        document.getElementById('levelIcon').textContent = levelIcon;
+        return icons[Math.min(level, 6)] || '⭐';
     }
 
-    // Mostrar toast
+    // Mostrar notificação (refatorada para usar sistema centralizado)
     showToast(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        const toastMessage = document.getElementById('toastMessage');
-        
-        toastMessage.textContent = message;
-        toast.className = `toast ${type}`;
-        toast.classList.add('show');
-        
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 3000);
+        return this.notifications.show(message, type);
     }
 
     // Mostrar seleção na coluna direita
@@ -559,7 +647,7 @@ class AprenderBrincando {
         
         moneyImage.src = element.querySelector('.money-image').src;
         moneyImage.alt = `R$ ${data.value}`;
-        moneyValue.textContent = `R$ ${data.value.toFixed(2)}`;
+        moneyValue.textContent = GameUtils.formatCurrency(data.value);
         
         selectedMoney.style.display = 'flex';
         
@@ -577,7 +665,7 @@ class AprenderBrincando {
         productImage.src = data.image_url;
         productImage.alt = data.name;
         productName.textContent = data.name;
-        productPrice.textContent = `R$ ${data.price.toFixed(2)}`;
+        productPrice.textContent = GameUtils.formatCurrency(data.price);
         
         selectedProduct.style.display = 'flex';
         
@@ -604,7 +692,7 @@ class AprenderBrincando {
         
         if (type === 'money') {
             this.addMoney(data.value);
-            this.showToast(`💰 R$ ${data.value.toFixed(2)} adicionado ao carrinho!`);
+            this.showToast(`💰 ${GameUtils.formatCurrency(data.value)} adicionado ao carrinho!`);
         } else if (type === 'product') {
             this.buyProduct(data);
         }
@@ -741,11 +829,11 @@ class AprenderBrincando {
         
         this.clearLearningMessages();
         this.addStackedLearningMessage(
-            `🏆 PARABÉNS! Você subiu para o nível ${this.level}! Ganhou R$ ${reward.toFixed(2)} de recompensa!`, 
+            `🏆 PARABÉNS! Você subiu para o nível ${this.level}! Ganhou ${GameUtils.formatCurrency(reward)} de recompensa!`, 
             'level'
         );
         
-        this.showToast(`🎉 Nível ${this.level} desbloqueado! +R$ ${reward.toFixed(2)}`, 'success');
+        this.showToast(`🎉 Nível ${this.level} desbloqueado! +${GameUtils.formatCurrency(reward)}`, 'success');
         this.updateDisplay();
         this.updateExperienceDisplay();
     }
@@ -779,186 +867,42 @@ class AprenderBrincando {
         if (this.quizActive || this.lives <= 0) return;
         
         this.quizActive = true;
-        this.currentQuiz = this.generateQuiz();
         this.showQuizModal();
     }
 
     generateQuiz() {
-        const quizTypes = ['math', 'money', 'riddle'];
-        const type = quizTypes[Math.floor(Math.random() * quizTypes.length)];
-        
-        switch (type) {
-            case 'math':
-                return this.generateMathQuiz();
-            case 'money':
-                return this.generateMoneyQuiz();
-            case 'riddle':
-                return this.generateRiddleQuiz();
-            default:
-                return this.generateMathQuiz();
-        }
+        return QuizManager.generateQuiz();
     }
 
-    generateMathQuiz() {
-        const operations = ['+', '-', '*'];
-        const operation = operations[Math.floor(Math.random() * operations.length)];
-        let a, b, answer;
-        
-        if (operation === '+') {
-            a = Math.floor(Math.random() * 20) + 1;
-            b = Math.floor(Math.random() * 20) + 1;
-            answer = a + b;
-        } else if (operation === '-') {
-            a = Math.floor(Math.random() * 20) + 10;
-            b = Math.floor(Math.random() * a);
-            answer = a - b;
-        } else { // multiplicação
-            a = Math.floor(Math.random() * 10) + 1;
-            b = Math.floor(Math.random() * 10) + 1;
-            answer = a * b;
-        }
-        
-        const wrongAnswers = [
-            answer + Math.floor(Math.random() * 5) + 1,
-            answer - Math.floor(Math.random() * 5) - 1,
-            answer + Math.floor(Math.random() * 10) + 5
-        ].filter(w => w !== answer && w > 0);
-        
-        const options = [answer, ...wrongAnswers.slice(0, 3)].sort(() => Math.random() - 0.5);
-        
-        return {
-            type: 'math',
-            question: `Quanto é ${a} ${operation} ${b}?`,
-            options: options,
-            correct: answer,
-            reward: Math.floor(Math.random() * 3) + 2 // R$ 2-4
-        };
-    }
-
-    generateMoneyQuiz() {
-        const scenarios = [
-            {
-                question: "Se você tem R$ 10,00 e compra algo por R$ 3,50, quanto sobra?",
-                answer: 6.50,
-                reward: 3
-            },
-            {
-                question: "Quantos centavos tem em R$ 2,75?",
-                answer: 275,
-                reward: 4
-            },
-            {
-                question: "Se você economizar R$ 1,00 por dia, quanto terá em uma semana?",
-                answer: 7.00,
-                reward: 5
-            }
-        ];
-        
-        const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
-        const wrongAnswers = [
-            scenario.answer + 1,
-            scenario.answer - 1,
-            scenario.answer * 2
-        ].filter(w => w !== scenario.answer && w > 0);
-        
-        const options = [scenario.answer, ...wrongAnswers.slice(0, 3)].sort(() => Math.random() - 0.5);
-        
-        return {
-            type: 'money',
-            question: scenario.question,
-            options: options,
-            correct: scenario.answer,
-            reward: scenario.reward
-        };
-    }
-
-    generateRiddleQuiz() {
-        const riddles = [
-            {
-                question: "O que você deve fazer ANTES de comprar algo?",
-                options: ["Verificar se tem dinheiro", "Pedir emprestado", "Comprar mesmo assim", "Não pensar"],
-                correct: "Verificar se tem dinheiro",
-                reward: 3
-            },
-            {
-                question: "Qual é a melhor forma de guardar dinheiro?",
-                options: ["No cofre/banco", "No bolso", "Embaixo do colchão", "Com os amigos"],
-                correct: "No cofre/banco",
-                reward: 4
-            },
-            {
-                question: "O que significa 'economizar'?",
-                options: ["Guardar dinheiro", "Gastar tudo", "Dar para outros", "Perder dinheiro"],
-                correct: "Guardar dinheiro",
-                reward: 3
-            }
-        ];
-        
-        const riddle = riddles[Math.floor(Math.random() * riddles.length)];
-        
-        return {
-            type: 'riddle',
-            question: riddle.question,
-            options: riddle.options,
-            correct: riddle.correct,
-            reward: riddle.reward
-        };
-    }
+    // Métodos de quiz removidos - agora centralizados no QuizManager
 
     showQuizModal() {
-        const modal = document.createElement('div');
-        modal.id = 'quizModal';
-        modal.className = 'quiz-modal';
-        modal.innerHTML = `
-            <div class="quiz-content">
-                <div class="quiz-header">
-                    <h3>🧠 Desafio Educativo!</h3>
-                    <div class="quiz-info">
-                        <span>💰 Recompensa: R$ ${this.currentQuiz.reward.toFixed(2)}</span>
-                        <span>❤️ Vidas: ${this.lives}</span>
-                    </div>
-                </div>
-                <div class="quiz-question">
-                    <p>${this.currentQuiz.question}</p>
-                </div>
-                <div class="quiz-options">
-                    ${this.currentQuiz.options.map((option, index) => 
-                        `<button class="quiz-option" data-answer="${option}">${option}</button>`
-                    ).join('')}
-                </div>
-                <div class="quiz-footer">
-                    <button class="quiz-close" onclick="game.closeQuiz()">❌ Fechar</button>
-                </div>
-            </div>
-        `;
+        const quiz = this.generateQuiz();
+        this.currentQuiz = quiz;
+        
+        const modal = QuizManager.createQuizModal(quiz, (isCorrect, reward) => {
+            this.quizActive = false;
+            this.answerQuiz(isCorrect, reward);
+        });
         
         document.body.appendChild(modal);
-        
-        // Event listeners para as opções
-        modal.querySelectorAll('.quiz-option').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                this.answerQuiz(e.target.dataset.answer);
-            });
-        });
     }
 
-    answerQuiz(selectedAnswer) {
-        const isCorrect = selectedAnswer == this.currentQuiz.correct;
-        
+    answerQuiz(isCorrect, reward) {
         if (isCorrect) {
             this.streakCount++;
             const bonusReward = Math.floor(this.streakCount / 3); // Bônus a cada 3 acertos
-            const totalReward = this.currentQuiz.reward + bonusReward;
+            const totalReward = reward + bonusReward;
             
             this.balance += totalReward;
             this.addExperience(20);
             
             this.addStackedLearningMessage(
-                `✅ Correto! Você ganhou R$ ${totalReward.toFixed(2)}! Sequência: ${this.streakCount}`,
+                `✅ Correto! Você ganhou ${GameUtils.formatCurrency(totalReward)}! Sequência: ${this.streakCount}`,
                 'reward'
             );
             
-            this.showToast(`🎉 Correto! +R$ ${totalReward.toFixed(2)}`, 'success');
+            this.showToast(`🎉 Correto! +${GameUtils.formatCurrency(totalReward)}`, 'success');
         } else {
             this.streakCount = 0;
             this.lives--;
@@ -975,19 +919,12 @@ class AprenderBrincando {
             }
         }
         
-        this.closeQuiz();
         this.updateDisplay();
         this.updateExperienceDisplay();
-    }
-
-    closeQuiz() {
-        const modal = document.getElementById('quizModal');
-        if (modal) {
-            modal.remove();
-        }
-        this.quizActive = false;
         this.currentQuiz = null;
     }
+
+    // Método closeQuiz removido - não mais necessário com sistema centralizado
 
     gameOver() {
         this.balance = 0;
