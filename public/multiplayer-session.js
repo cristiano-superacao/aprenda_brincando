@@ -23,23 +23,12 @@ class MultiplayerSession {
     }
 
     async init() {
-        // Para desenvolvimento, ativar modo offline por padrão
-        localStorage.setItem('offlineMode', 'true');
-        
         await this.connectWebSocket();
         this.setupEventHandlers();
     }
 
     async connectWebSocket() {
         try {
-            // Para desenvolvimento, simular conexão offline
-            if (localStorage.getItem('offlineMode') === 'true') {
-                console.log('🔄 Modo offline ativado - simulando conexão');
-                this.isConnected = true;
-                this.simulateOfflineMode();
-                return;
-            }
-            
             // Conectar ao WebSocket
             const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
             const wsUrl = process.env.NODE_ENV === 'production' 
@@ -741,22 +730,7 @@ class MultiplayerSession {
     }
 
     showConnectionError() {
-        this.showNotification('❌ Não foi possível conectar ao servidor. Ativando modo offline.', 'error');
-        // Ativar modo offline automaticamente
-        localStorage.setItem('offlineMode', 'true');
-        this.simulateOfflineMode();
-    }
-
-    simulateOfflineMode() {
-        console.log('🔄 Simulando modo offline para desenvolvimento');
-        this.isConnected = true;
-        
-        // Simular delay de conexão
-        setTimeout(() => {
-            if (window.playerProfile?.getCurrentPlayer()) {
-                this.authenticatePlayer();
-            }
-        }, 1000);
+        this.showNotification('❌ Não foi possível conectar ao servidor. Verifique sua conexão.', 'error');
     }
 
     setupEventHandlers() {
