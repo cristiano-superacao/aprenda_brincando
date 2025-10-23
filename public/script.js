@@ -56,7 +56,38 @@ class AprenderBrincando {
         // Atualizar display inicial
         this.updateDisplay();
         
-        console.log('🎮 Mercadinho do Cristhian inicializado!');
+        // Inicializar sistemas globais
+        this.initializeGlobalSystems();
+        
+        console.log('🎮 Jogo inicializado com sucesso!');
+    }
+
+    initializeGlobalSystems() {
+        // Inicializar sistema educativo de quiz
+        if (typeof EducationalQuizSystem !== 'undefined') {
+            window.educationalQuizSystem = new EducationalQuizSystem(this);
+            console.log('✅ Sistema educativo de quiz inicializado');
+        }
+        
+        // Inicializar sistema multiplayer
+        if (typeof MultiplayerSession !== 'undefined') {
+            window.multiplayerSession = new MultiplayerSession();
+            console.log('✅ Sistema multiplayer inicializado');
+        }
+        
+        // Verificar perfil do jogador
+        if (window.playerProfile) {
+            const currentPlayer = window.playerProfile.getCurrentPlayer();
+            if (currentPlayer) {
+                console.log(`👋 Bem-vindo(a), ${currentPlayer.name}!`);
+                this.addPlayerButtons();
+            } else {
+                // Mostrar modal de criação de perfil se não existir
+                setTimeout(() => {
+                    window.playerProfile.showCreateModal();
+                }, 1000);
+            }
+        }
     }
 
     // Configurar observers para mudanças de estado
@@ -843,10 +874,15 @@ class AprenderBrincando {
 
     // Sistema de Quiz para Ganhar Dinheiro
     startQuiz() {
-        if (this.quizActive || this.lives <= 0) return;
-        
-        this.quizActive = true;
-        this.showQuizModal();
+        if (window.educationalQuizSystem) {
+            window.educationalQuizSystem.showQuiz();
+        } else {
+            // Fallback para o sistema antigo
+            if (this.quizActive || this.lives <= 0) return;
+            
+            this.quizActive = true;
+            this.showQuizModal();
+        }
     }
 
     generateQuiz() {
@@ -997,5 +1033,50 @@ document.addEventListener('DOMContentLoaded', () => {
                 isConnected = false;
             }
         });
+    }
+
+    // Métodos para integração com sistemas
+    showPlayerProfile() {
+        if (window.playerProfile) {
+            window.playerProfile.showProfileModal();
+        } else {
+            this.addNotification('👤 Sistema de perfil não disponível', 'error');
+        }
+    }
+
+    showMultiplayer() {
+        if (window.multiplayerSession) {
+            window.multiplayerSession.showMainMenu();
+        } else {
+            this.addNotification('🎮 Sistema multiplayer não disponível', 'error');
+        }
+    }
+
+    addPlayerButtons() {
+        // Adicionar botões de perfil e multiplayer na interface
+        const gameActions = document.querySelector('.game-actions');
+        if (gameActions && !document.getElementById('playerProfileBtn')) {
+            const profileBtn = document.createElement('button');
+            profileBtn.id = 'playerProfileBtn';
+            profileBtn.className = 'action-button profile-btn';
+            profileBtn.innerHTML = '👤 Meu Perfil';
+            profileBtn.onclick = () => this.showPlayerProfile();
+            
+            const multiplayerBtn = document.createElement('button');
+            multiplayerBtn.id = 'multiplayerBtn';
+            multiplayerBtn.className = 'action-button multiplayer-btn';
+            multiplayerBtn.innerHTML = '🎮 Jogar Online';
+            multiplayerBtn.onclick = () => this.showMultiplayer();
+            
+            const quizBtn = document.createElement('button');
+            quizBtn.id = 'educationalQuizBtn';
+            quizBtn.className = 'action-button quiz-btn';
+            quizBtn.innerHTML = '🧠 Quiz Educativo';
+            quizBtn.onclick = () => this.startQuiz();
+            
+            gameActions.appendChild(profileBtn);
+            gameActions.appendChild(multiplayerBtn);
+            gameActions.appendChild(quizBtn);
+        }
     }
 });

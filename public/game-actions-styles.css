@@ -1,0 +1,61 @@
+/* Ações do Jogo */
+.game-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    justify-content: center;
+    margin: 30px 0;
+    padding: 20px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.action-button {
+    background: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 15px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    min-width: 150px;
+}
+
+.action-button:hover {
+    background: rgba(255, 255, 255, 0.2);
+    border-color: rgba(255, 255, 255, 0.6);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.action-button.profile-btn {
+    background: linear-gradient(45deg, #4facfe, #00f2fe);
+    border-color: #4facfe;
+}
+
+.action-button.multiplayer-btn {
+    background: linear-gradient(45deg, #fa709a, #fee140);
+    border-color: #fa709a;
+}
+
+.action-button.quiz-btn {
+    background: linear-gradient(45deg, #a8edea, #fed6e3);
+    color: #333;
+    border-color: #a8edea;
+}
+
+@media (max-width: 768px) {
+    .game-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .action-button {
+        width: 100%;
+        max-width: 250px;
+    }
+}
