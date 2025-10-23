@@ -175,7 +175,6 @@ class EducationalAgent {
         
         // Análise contextual baseada nas compras e saldo do jogo
         const currentBalance = this.game.balance;
-        const totalSpent = this.game.totalSpent || 0;
         const recentPurchases = this.getRecentPurchases();
 
         // Respostas baseadas em contexto
@@ -184,7 +183,7 @@ class EducationalAgent {
         }
         
         if (message.includes('gastar') || message.includes('comprar')) {
-            return this.getSpendingAdvice(currentBalance, totalSpent);
+            return this.getSpendingAdvice(currentBalance);
         }
         
         if (message.includes('escolha') || message.includes('decisão')) {
@@ -218,11 +217,11 @@ class EducationalAgent {
         return tips[Math.floor(Math.random() * tips.length)];
     }
 
-    getSpendingAdvice(balance, totalSpent) {
+    getSpendingAdvice(balance) {
         if (balance < 5) {
             return "💡 Seu saldo está baixinho! Que tal pensar bem antes da próxima compra? Compre só o que realmente precisa!";
-        } else if (totalSpent > balance * 2) {
-            return "⚠️ Você já gastou bastante! Lembre-se: é importante equilibrar gastos com economia. Que tal guardar um pouquinho agora?";
+        } else if (balance > 50) {
+            return "💰 Você tem um bom saldo! Que tal equilibrar entre economizar e comprar coisas que você realmente precisa?";
         } else {
             return "✅ Você está gastando de forma equilibrada! Continue fazendo boas escolhas e sempre pense: 'Eu realmente preciso disso?'";
         }

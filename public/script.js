@@ -14,6 +14,7 @@ class AprenderBrincando {
         this.quizActive = false;
         this.currentQuiz = null;
         this.currentSelection = null;
+        this.buttonsConfigured = false;
         
         // Inicializar
         this.init();
@@ -514,7 +515,6 @@ class AprenderBrincando {
             this.level = 1;
             this.points = 0;
             this.experience = 0;
-            this.experienceToNextLevel = 100;
             this.lives = this.maxLives;
             this.streakCount = 0;
             this.cartItems = [];
@@ -801,7 +801,6 @@ class AprenderBrincando {
     levelUp() {
         this.level++;
         this.experience = 0;
-        this.experienceToNextLevel = Math.floor(this.experienceToNextLevel * 1.5);
         this.lives = this.maxLives; // Restaurar vidas
         
         const reward = this.level * 5; // R$ 5 por nível
