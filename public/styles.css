@@ -28,16 +28,16 @@ body {
 /* Header */
 .header {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    margin-bottom: 40px;
+    margin-bottom: 30px;
     padding: 20px 0;
-    border-bottom: 2px solid #f0f0f0;
     background: linear-gradient(135deg, #9c27b0, #8e24aa);
-    margin: -20px -20px 40px -20px;
+    margin: -20px -20px 30px -20px;
     padding: 30px 20px;
     border-radius: 20px 20px 0 0;
     color: white;
+    text-align: center;
 }
 
 .title-section h1 {
@@ -51,12 +51,6 @@ body {
     font-size: 1.1rem;
     color: rgba(255, 255, 255, 0.9);
     font-weight: 400;
-}
-
-.player-status {
-    display: flex;
-    gap: 30px;
-    align-items: center;
 }
 
 .balance {
@@ -79,49 +73,6 @@ body {
     display: block;
     font-size: 1.8rem;
     font-weight: 700;
-}
-
-.level {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    background: white;
-    padding: 15px 20px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-}
-
-.level-icon {
-    font-size: 2rem;
-}
-
-.level-info {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.level-name {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: #4a5568;
-}
-
-.level-details {
-    display: flex;
-    gap: 10px;
-}
-
-.level-number {
-    font-size: 1rem;
-    font-weight: 500;
-    color: #718096;
-}
-
-.points {
-    font-size: 0.9rem;
-    color: #ed8936;
-    font-weight: 500;
 }
 
 /* Seções */
@@ -190,6 +141,222 @@ section h2::after {
     color: white;
     border-color: transparent;
     box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+}
+
+/* Layout dos Controles */
+.controls-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 30px;
+}
+
+/* Seção de Estatísticas */
+.stats-section h2 {
+    color: #4a5568;
+    margin-bottom: 20px;
+    font-size: 1.3em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stats-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.stat-item {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.stat-item:hover {
+    border-color: #9c27b0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.2);
+}
+
+.stat-icon {
+    width: 45px;
+    height: 45px;
+    background: linear-gradient(135deg, #9c27b0, #e91e63);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3em;
+    color: white;
+    box-shadow: 0 3px 10px rgba(156, 39, 176, 0.3);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #718096;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+/* Informações do Jogador */
+.player-info {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+}
+
+.level-card, .balance-card {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    min-width: 200px;
+}
+
+.level-card:hover, .balance-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(156, 39, 176, 0.2);
+    border-color: #9c27b0;
+}
+
+.level-icon, .balance-icon {
+    font-size: 2rem;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #f8f9ff, #f1f3ff);
+    border-radius: 12px;
+    border: 2px solid #e91e63;
+}
+
+.level-details, .balance-details {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.level-name, .balance-label {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.level-number, .points, .balance-value {
+    font-size: 0.9rem;
+    color: #718096;
+    font-weight: 500;
+}
+
+.balance-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #2d3748;
+}
+
+/* Controles Principais */
+.main-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(10px);
+}
+
+.difficulty-section h2,
+.financial-stats h2 {
+    margin-bottom: 20px;
+    font-size: 1.3em;
+    color: #2d3748;
+}
+
+.financial-stats {
+    text-align: center;
+}
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 15px;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+.stat-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(156, 39, 176, 0.15);
+    border-color: #9c27b0;
+}
+
+.stat-icon {
+    font-size: 2em;
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #9c27b0, #e91e63);
+    border-radius: 50%;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 0.9em;
+    color: #718096;
+    font-weight: 500;
+}
+
+.stat-value {
+    font-size: 1.2em;
+    font-weight: bold;
+    color: #2d3748;
+    margin-top: 2px;
 }
 
 /* Grid de Moedas */
@@ -757,26 +924,87 @@ section h2::after {
     }
     
     .header {
-        flex-direction: column;
-        gap: 20px;
-        text-align: center;
         margin: -15px -15px 30px -15px;
         padding: 20px 15px;
     }
     
-    .player-status {
-        flex-direction: column;
-        gap: 15px;
-        width: 100%;
+    .title-section h1 {
+        font-size: 1.8rem;
     }
     
-    .balance, .level {
+    /* Layout responsivo dos controles */
+    .controls-row {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+    
+    .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    
+    .stat-item {
+        padding: 12px;
+        flex-direction: column;
+        text-align: center;
+        gap: 8px;
+    }
+    
+    .stat-icon {
+        width: 35px;
+        height: 35px;
+        font-size: 1.1em;
+    }
+    
+    .stat-label {
+        font-size: 0.8em;
+    }
+    
+    .stat-value {
+        font-size: 1em;
+    }
+    
+    .player-info {
+        flex-direction: column;
+        gap: 15px;
+        align-items: center;
+    }
+    
+    .level-card, .balance-card {
         width: 100%;
+        max-width: 300px;
         justify-content: center;
     }
     
-    .title-section h1 {
-        font-size: 1.8rem;
+    .main-controls {
+        grid-template-columns: 1fr;
+        gap: 20px;
+        padding: 15px;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    
+    .stat-item {
+        padding: 12px;
+        gap: 12px;
+    }
+    
+    .stat-icon {
+        font-size: 1.5em;
+        width: 40px;
+        height: 40px;
+    }
+    
+    .stat-label {
+        font-size: 0.8em;
+    }
+    
+    .stat-value {
+        font-size: 1.1em;
     }
     
     .title-section p {

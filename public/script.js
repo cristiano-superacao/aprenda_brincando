@@ -2,6 +2,8 @@ class AprenderBrincando {
     constructor() {
         this.currentUser = null;
         this.balance = 0;
+        this.initialMoney = 0;
+        this.totalSpent = 0;
         this.level = 1;
         this.points = 0;
         this.difficulty = 'facil';
@@ -188,6 +190,13 @@ class AprenderBrincando {
 
     // Adicionar dinheiro
     async addMoney(value) {
+        // Se é o primeiro dinheiro adicionado, definir como inicial
+        if (this.initialMoney === 0) {
+            this.initialMoney = value;
+        } else {
+            this.initialMoney += value;
+        }
+        
         this.balance += value;
         await this.updateUserBalance();
         
@@ -214,6 +223,7 @@ class AprenderBrincando {
         }
 
         this.balance -= product.price;
+        this.totalSpent += product.price;
         this.points += product.points_reward;
         
         await this.updateUserBalance();
@@ -406,6 +416,8 @@ class AprenderBrincando {
     async restartGame() {
         if (confirm('Tem certeza que deseja recomeçar o jogo? Todo o progresso será perdido.')) {
             this.balance = 0;
+            this.initialMoney = 0;
+            this.totalSpent = 0;
             this.level = 1;
             this.points = 0;
             this.cartItems = [];
@@ -425,6 +437,11 @@ class AprenderBrincando {
         document.getElementById('balance').textContent = `R$ ${this.balance.toFixed(2)}`;
         document.getElementById('levelNumber').textContent = `Nível ${this.level}`;
         document.getElementById('points').textContent = `${this.points} Pontos`;
+        
+        // Atualizar estatísticas financeiras
+        document.getElementById('initialMoney').textContent = `R$ ${this.initialMoney.toFixed(2)}`;
+        document.getElementById('totalSpent').textContent = `R$ ${this.totalSpent.toFixed(2)}`;
+        document.getElementById('remaining').textContent = `R$ ${this.balance.toFixed(2)}`;
         
         // Atualizar nome do nível
         const levelNames = {
