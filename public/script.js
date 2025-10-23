@@ -6,10 +6,18 @@ class AprenderBrincando {
         this.totalSpent = 0;
         this.level = 1;
         this.points = 0;
+        this.experience = 0;
+        this.experienceToNextLevel = 100;
+        this.lives = 3;
+        this.maxLives = 3;
         this.difficulty = 'facil';
         this.products = [];
         this.cartItems = [];
         this.multiplayer = null;
+        this.educationalAgent = null;
+        this.quizActive = false;
+        this.currentQuiz = null;
+        this.streakCount = 0;
         this.init();
     }
 
@@ -19,6 +27,15 @@ class AprenderBrincando {
         this.updateDisplay();
         await this.initializeUser();
         this.setupMultiplayer();
+        this.setupEducationalAgent();
+    }
+
+    // Configurar agente educativo
+    setupEducationalAgent() {
+        if (window.EducationalAgent) {
+            this.educationalAgent = new EducationalAgent(this);
+            console.log('🎓 Agente educativo inicializado');
+        }
     }
 
     // Configurar event listeners
@@ -214,6 +231,11 @@ class AprenderBrincando {
         
         this.updateDisplay();
         this.showMoneyLearning(value);
+        
+        // Notificar agente educativo
+        if (this.educationalAgent) {
+            this.educationalAgent.onMoneyAdded(value);
+        }
     }
 
     // Comprar produto
@@ -226,6 +248,7 @@ class AprenderBrincando {
         this.balance -= product.price;
         this.totalSpent += product.price;
         this.points += product.points_reward;
+        this.addExperience(15); // XP por compra
         
         await this.updateUserBalance();
         await this.checkLevelUp();
@@ -241,6 +264,11 @@ class AprenderBrincando {
         
         // Mostrar aprendizado educativo
         this.showLearningMessage(product);
+        
+        // Notificar agente educativo
+        if (this.educationalAgent) {
+            this.educationalAgent.onPurchaseMade(product);
+        }
         
         // Registrar transação
         await this.addTransaction('buy_product', product.price, `Comprou ${product.name}`, product.points_reward);
@@ -418,13 +446,19 @@ class AprenderBrincando {
 
     // Recomeçar jogo
     async restartGame() {
-        if (confirm('Tem certeza que deseja recomeçar o jogo? Todo o progresso será perdido.')) {
+        if (confirm('🔄 Tem certeza que deseja recomeçar o jogo? Todo o progresso será perdido.')) {
             this.balance = 0;
             this.initialMoney = 0;
             this.totalSpent = 0;
             this.level = 1;
             this.points = 0;
+            this.experience = 0;
+            this.experienceToNextLevel = 100;
+            this.lives = this.maxLives;
+            this.streakCount = 0;
             this.cartItems = [];
+            
+            this.clearLearningMessages();
             
             await this.updateUserBalance();
             await this.updateUserLevel();
@@ -432,7 +466,15 @@ class AprenderBrincando {
             
             this.updateDisplay();
             this.updateCartDisplay();
-            this.showToast('🔄 Jogo reiniciado!', 'success');
+            this.updateExperienceDisplay();
+            
+            this.addStackedLearningMessage('🎮 Jogo reiniciado! Boa sorte na sua nova aventura!', 'general');
+            this.showToast('🔄 Jogo reiniciado com sucesso!', 'success');
+            
+            // Notificar multiplayer
+            if (this.multiplayer && this.multiplayer.isMultiplayerConnected()) {
+                this.multiplayer.notifyRestart();
+            }
         }
     }
 
@@ -446,6 +488,9 @@ class AprenderBrincando {
         document.getElementById('initialMoney').textContent = `R$ ${this.initialMoney.toFixed(2)}`;
         document.getElementById('totalSpent').textContent = `R$ ${this.totalSpent.toFixed(2)}`;
         document.getElementById('remaining').textContent = `R$ ${this.balance.toFixed(2)}`;
+        
+        // Atualizar experiência e vidas
+        this.updateExperienceDisplay();
         
         // Atualizar nome do nível
         const levelNames = {
@@ -585,20 +630,381 @@ class AprenderBrincando {
     // Mostrar aprendizado educativo
     showLearningMessage(product) {
         const learningInfo = document.getElementById('learningInfo');
-        const learningText = document.getElementById('learningText');
         
         // Mensagens educativas baseadas no produto e preço
         const learningMessages = this.getLearningMessage(product);
         
+        // Criar nova mensagem empilhada
+        this.addStackedLearningMessage(learningMessages.message, 'purchase');
+    }
+
+    // Adicionar mensagem empilhada no sistema de aprendizado
+    addStackedLearningMessage(message, type = 'general') {
+        const learningInfo = document.getElementById('learningInfo');
+        const learningText = document.getElementById('learningText');
+        
+        // Criar container de mensagens se não existir
+        let messageStack = document.getElementById('messageStack');
+        if (!messageStack) {
+            messageStack = document.createElement('div');
+            messageStack.id = 'messageStack';
+            messageStack.className = 'message-stack';
+            learningInfo.appendChild(messageStack);
+            
+            // Esconder texto padrão
+            learningText.style.display = 'none';
+        }
+        
+        // Criar nova mensagem
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `stacked-message ${type}-message`;
+        messageDiv.innerHTML = `
+            <div class="message-content">
+                <span class="message-icon">${this.getMessageIcon(type)}</span>
+                <span class="message-text">${message}</span>
+                <span class="message-time">${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'})}</span>
+            </div>
+        `;
+        
+        // Adicionar animação de entrada
+        messageDiv.style.opacity = '0';
+        messageDiv.style.transform = 'translateX(-20px)';
+        messageStack.appendChild(messageDiv);
+        
+        // Animar entrada
+        setTimeout(() => {
+            messageDiv.style.transition = 'all 0.3s ease';
+            messageDiv.style.opacity = '1';
+            messageDiv.style.transform = 'translateX(0)';
+        }, 100);
+        
         // Destacar o card educativo
         learningInfo.classList.add('highlight');
-        learningText.textContent = learningMessages.message;
-        
-        // Remover destaque após 5 segundos
         setTimeout(() => {
             learningInfo.classList.remove('highlight');
+        }, 1000);
+        
+        // Limitar a 10 mensagens para não sobrecarregar
+        while (messageStack.children.length > 10) {
+            messageStack.removeChild(messageStack.firstChild);
+        }
+    }
+
+    // Obter ícone baseado no tipo de mensagem
+    getMessageIcon(type) {
+        const icons = {
+            'purchase': '🛒',
+            'money': '💰',
+            'level': '🏆',
+            'quiz': '🧠',
+            'reward': '🎁',
+            'general': '💡'
+        };
+        return icons[type] || '💡';
+    }
+
+    // Limpar mensagens de aprendizado (ao reiniciar ou mudar nível)
+    clearLearningMessages() {
+        const messageStack = document.getElementById('messageStack');
+        const learningText = document.getElementById('learningText');
+        
+        if (messageStack) {
+            messageStack.remove();
+        }
+        
+        if (learningText) {
+            learningText.style.display = 'block';
             learningText.textContent = 'Clique nos produtos para aprender sobre dinheiro!';
-        }, 5000);
+        }
+    }
+
+    // Sistema de Experiência e Níveis
+    addExperience(amount) {
+        this.experience += amount;
+        this.checkLevelUp();
+        this.updateExperienceDisplay();
+    }
+
+    checkLevelUp() {
+        if (this.experience >= this.experienceToNextLevel) {
+            this.levelUp();
+        }
+    }
+
+    levelUp() {
+        this.level++;
+        this.experience = 0;
+        this.experienceToNextLevel = Math.floor(this.experienceToNextLevel * 1.5);
+        this.lives = this.maxLives; // Restaurar vidas
+        
+        const reward = this.level * 5; // R$ 5 por nível
+        this.balance += reward;
+        
+        this.clearLearningMessages();
+        this.addStackedLearningMessage(
+            `🏆 PARABÉNS! Você subiu para o nível ${this.level}! Ganhou R$ ${reward.toFixed(2)} de recompensa!`, 
+            'level'
+        );
+        
+        this.showToast(`🎉 Nível ${this.level} desbloqueado! +R$ ${reward.toFixed(2)}`, 'success');
+        this.updateDisplay();
+        this.updateExperienceDisplay();
+    }
+
+    updateExperienceDisplay() {
+        const expBar = document.getElementById('experienceBar');
+        const expText = document.getElementById('experienceText');
+        const levelDisplay = document.getElementById('levelDisplay');
+        const livesDisplay = document.getElementById('livesDisplay');
+        
+        if (expBar) {
+            const percentage = (this.experience / this.experienceToNextLevel) * 100;
+            expBar.style.width = `${percentage}%`;
+        }
+        
+        if (expText) {
+            expText.textContent = `${this.experience}/${this.experienceToNextLevel} XP`;
+        }
+        
+        if (levelDisplay) {
+            levelDisplay.textContent = `Nível ${this.level}`;
+        }
+        
+        if (livesDisplay) {
+            livesDisplay.textContent = '❤️'.repeat(this.lives) + '🤍'.repeat(this.maxLives - this.lives);
+        }
+    }
+
+    // Sistema de Quiz para Ganhar Dinheiro
+    startQuiz() {
+        if (this.quizActive || this.lives <= 0) return;
+        
+        this.quizActive = true;
+        this.currentQuiz = this.generateQuiz();
+        this.showQuizModal();
+    }
+
+    generateQuiz() {
+        const quizTypes = ['math', 'money', 'riddle'];
+        const type = quizTypes[Math.floor(Math.random() * quizTypes.length)];
+        
+        switch (type) {
+            case 'math':
+                return this.generateMathQuiz();
+            case 'money':
+                return this.generateMoneyQuiz();
+            case 'riddle':
+                return this.generateRiddleQuiz();
+            default:
+                return this.generateMathQuiz();
+        }
+    }
+
+    generateMathQuiz() {
+        const operations = ['+', '-', '*'];
+        const operation = operations[Math.floor(Math.random() * operations.length)];
+        let a, b, answer;
+        
+        if (operation === '+') {
+            a = Math.floor(Math.random() * 20) + 1;
+            b = Math.floor(Math.random() * 20) + 1;
+            answer = a + b;
+        } else if (operation === '-') {
+            a = Math.floor(Math.random() * 20) + 10;
+            b = Math.floor(Math.random() * a);
+            answer = a - b;
+        } else { // multiplicação
+            a = Math.floor(Math.random() * 10) + 1;
+            b = Math.floor(Math.random() * 10) + 1;
+            answer = a * b;
+        }
+        
+        const wrongAnswers = [
+            answer + Math.floor(Math.random() * 5) + 1,
+            answer - Math.floor(Math.random() * 5) - 1,
+            answer + Math.floor(Math.random() * 10) + 5
+        ].filter(w => w !== answer && w > 0);
+        
+        const options = [answer, ...wrongAnswers.slice(0, 3)].sort(() => Math.random() - 0.5);
+        
+        return {
+            type: 'math',
+            question: `Quanto é ${a} ${operation} ${b}?`,
+            options: options,
+            correct: answer,
+            reward: Math.floor(Math.random() * 3) + 2 // R$ 2-4
+        };
+    }
+
+    generateMoneyQuiz() {
+        const scenarios = [
+            {
+                question: "Se você tem R$ 10,00 e compra algo por R$ 3,50, quanto sobra?",
+                answer: 6.50,
+                reward: 3
+            },
+            {
+                question: "Quantos centavos tem em R$ 2,75?",
+                answer: 275,
+                reward: 4
+            },
+            {
+                question: "Se você economizar R$ 1,00 por dia, quanto terá em uma semana?",
+                answer: 7.00,
+                reward: 5
+            }
+        ];
+        
+        const scenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+        const wrongAnswers = [
+            scenario.answer + 1,
+            scenario.answer - 1,
+            scenario.answer * 2
+        ].filter(w => w !== scenario.answer && w > 0);
+        
+        const options = [scenario.answer, ...wrongAnswers.slice(0, 3)].sort(() => Math.random() - 0.5);
+        
+        return {
+            type: 'money',
+            question: scenario.question,
+            options: options,
+            correct: scenario.answer,
+            reward: scenario.reward
+        };
+    }
+
+    generateRiddleQuiz() {
+        const riddles = [
+            {
+                question: "O que você deve fazer ANTES de comprar algo?",
+                options: ["Verificar se tem dinheiro", "Pedir emprestado", "Comprar mesmo assim", "Não pensar"],
+                correct: "Verificar se tem dinheiro",
+                reward: 3
+            },
+            {
+                question: "Qual é a melhor forma de guardar dinheiro?",
+                options: ["No cofre/banco", "No bolso", "Embaixo do colchão", "Com os amigos"],
+                correct: "No cofre/banco",
+                reward: 4
+            },
+            {
+                question: "O que significa 'economizar'?",
+                options: ["Guardar dinheiro", "Gastar tudo", "Dar para outros", "Perder dinheiro"],
+                correct: "Guardar dinheiro",
+                reward: 3
+            }
+        ];
+        
+        const riddle = riddles[Math.floor(Math.random() * riddles.length)];
+        
+        return {
+            type: 'riddle',
+            question: riddle.question,
+            options: riddle.options,
+            correct: riddle.correct,
+            reward: riddle.reward
+        };
+    }
+
+    showQuizModal() {
+        const modal = document.createElement('div');
+        modal.id = 'quizModal';
+        modal.className = 'quiz-modal';
+        modal.innerHTML = `
+            <div class="quiz-content">
+                <div class="quiz-header">
+                    <h3>🧠 Desafio Educativo!</h3>
+                    <div class="quiz-info">
+                        <span>💰 Recompensa: R$ ${this.currentQuiz.reward.toFixed(2)}</span>
+                        <span>❤️ Vidas: ${this.lives}</span>
+                    </div>
+                </div>
+                <div class="quiz-question">
+                    <p>${this.currentQuiz.question}</p>
+                </div>
+                <div class="quiz-options">
+                    ${this.currentQuiz.options.map((option, index) => 
+                        `<button class="quiz-option" data-answer="${option}">${option}</button>`
+                    ).join('')}
+                </div>
+                <div class="quiz-footer">
+                    <button class="quiz-close" onclick="game.closeQuiz()">❌ Fechar</button>
+                </div>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        
+        // Event listeners para as opções
+        modal.querySelectorAll('.quiz-option').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                this.answerQuiz(e.target.dataset.answer);
+            });
+        });
+    }
+
+    answerQuiz(selectedAnswer) {
+        const isCorrect = selectedAnswer == this.currentQuiz.correct;
+        
+        if (isCorrect) {
+            this.streakCount++;
+            const bonusReward = Math.floor(this.streakCount / 3); // Bônus a cada 3 acertos
+            const totalReward = this.currentQuiz.reward + bonusReward;
+            
+            this.balance += totalReward;
+            this.addExperience(20);
+            
+            this.addStackedLearningMessage(
+                `✅ Correto! Você ganhou R$ ${totalReward.toFixed(2)}! Sequência: ${this.streakCount}`,
+                'reward'
+            );
+            
+            this.showToast(`🎉 Correto! +R$ ${totalReward.toFixed(2)}`, 'success');
+        } else {
+            this.streakCount = 0;
+            this.lives--;
+            
+            if (this.lives <= 0) {
+                this.gameOver();
+            } else {
+                this.addStackedLearningMessage(
+                    `❌ Resposta errada! Você perdeu uma vida. Resposta correta: ${this.currentQuiz.correct}`,
+                    'quiz'
+                );
+                
+                this.showToast(`💔 Errou! Vidas restantes: ${this.lives}`, 'error');
+            }
+        }
+        
+        this.closeQuiz();
+        this.updateDisplay();
+        this.updateExperienceDisplay();
+    }
+
+    closeQuiz() {
+        const modal = document.getElementById('quizModal');
+        if (modal) {
+            modal.remove();
+        }
+        this.quizActive = false;
+        this.currentQuiz = null;
+    }
+
+    gameOver() {
+        this.balance = 0;
+        this.lives = this.maxLives;
+        this.streakCount = 0;
+        this.experience = Math.floor(this.experience / 2); // Perde metade da experiência
+        
+        this.clearLearningMessages();
+        this.addStackedLearningMessage(
+            `💀 GAME OVER! Você perdeu todas as vidas e todo o dinheiro! Tente novamente!`,
+            'general'
+        );
+        
+        this.showToast('💀 Game Over! Reiniciando...', 'error');
+        this.updateDisplay();
+        this.updateExperienceDisplay();
     }
 
     // Obter mensagem educativa baseada no produto
@@ -622,9 +1028,6 @@ class AprenderBrincando {
 
     // Mostrar aprendizado ao adicionar dinheiro
     showMoneyLearning(value) {
-        const learningInfo = document.getElementById('learningInfo');
-        const learningText = document.getElementById('learningText');
-        
         let message = '';
         
         if (value < 1.00) {
@@ -635,13 +1038,7 @@ class AprenderBrincando {
             message = `💸 R$ ${value.toFixed(2)} é muito dinheiro! Use com sabedoria e planeje suas compras.`;
         }
         
-        learningInfo.classList.add('highlight');
-        learningText.textContent = message;
-        
-        setTimeout(() => {
-            learningInfo.classList.remove('highlight');
-            learningText.textContent = 'Clique nos produtos para aprender sobre dinheiro!';
-        }, 4000);
+        this.addStackedLearningMessage(message, 'money');
     }
 }
 

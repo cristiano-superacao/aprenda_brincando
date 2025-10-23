@@ -21,7 +21,24 @@
         <!-- Controles Principais -->
         <div class="main-controls">
             <div class="controls-row">
-                <!-- Dificuldade -->
+                                <!-- Sistema de Níveis e Experiência -->
+                <section class="level-section">
+                    <div class="level-header">
+                        <div class="level-info">
+                            <span id="levelDisplay">Nível 1</span>
+                            <span id="livesDisplay">❤️❤️❤️</span>
+                        </div>
+                        <button id="quizBtn" class="quiz-btn" onclick="game.startQuiz()">
+                            🧠 Ganhar Dinheiro
+                        </button>
+                    </div>
+                    <div class="experience-bar-container">
+                        <div class="experience-bar" id="experienceBar"></div>
+                        <span class="experience-text" id="experienceText">0/100 XP</span>
+                    </div>
+                </section>
+
+                <!-- Seleção de Dificuldade -->
                 <section class="difficulty-section">
                     <h2>⚙️ Escolha a Dificuldade:</h2>
                     <div class="difficulty-buttons">
@@ -236,6 +253,7 @@
     </div>
 
     <script src="multiplayer.js"></script>
+    <script src="educational-agent.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

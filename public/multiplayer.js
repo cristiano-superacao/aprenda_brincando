@@ -7,6 +7,10 @@ class MultiplayerManager {
         this.roomId = 'mercadinho-cristhian';
         this.isConnected = false;
         this.otherPlayers = new Map();
+        this.reconnectAttempts = 0;
+        this.maxReconnectAttempts = 5;
+        this.reconnectInterval = null;
+        this.pingInterval = null;
     }
 
     // Conectar ao servidor multiplayer
@@ -16,19 +20,27 @@ class MultiplayerManager {
         }
 
         this.playerName = playerName;
-        this.playerId = `player_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        if (!this.playerId) {
+            this.playerId = `player_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        }
+
+        this.attemptConnection();
+    }
+
+    attemptConnection() {
+        if (this.isConnected) return;
 
         try {
-            // Conectar via WebSocket
-            const wsUrl = window.location.protocol === 'https:' 
-                ? `wss://${window.location.host}`
-                : `ws://${window.location.host.replace('8000', '3002')}`;
+            // Determinar URL do WebSocket
+            const wsUrl = this.getWebSocketUrl();
+            console.log(`🔌 Tentando conectar ao: ${wsUrl}`);
             
             this.ws = new WebSocket(wsUrl);
 
             this.ws.onopen = () => {
                 console.log('🔌 Conectado ao servidor multiplayer');
                 this.isConnected = true;
+                this.reconnectAttempts = 0;
                 
                 // Entrar na sala
                 this.send({
@@ -39,29 +51,83 @@ class MultiplayerManager {
                 });
 
                 this.showMultiplayerUI();
-                this.game.showToast(`Conectado como ${this.playerName}!`);
+                this.game.showToast(`Conectado como ${this.playerName}!`, 'success');
+                
+                // Iniciar ping para manter conexão viva
+                this.startPing();
             };
 
             this.ws.onmessage = (event) => {
-                const message = JSON.parse(event.data);
-                this.handleMessage(message);
+                try {
+                    const message = JSON.parse(event.data);
+                    this.handleMessage(message);
+                } catch (error) {
+                    console.error('❌ Erro ao processar mensagem:', error);
+                }
             };
 
-            this.ws.onclose = () => {
-                console.log('🔌 Conexão multiplayer perdida');
-                this.isConnected = false;
-                this.hideMultiplayerUI();
-                this.game.showToast('Conexão multiplayer perdida', 'error');
+            this.ws.onclose = (event) => {
+                console.log('🔌 Conexão multiplayer perdida:', event.code, event.reason);
+                this.handleDisconnection();
             };
 
             this.ws.onerror = (error) => {
                 console.error('❌ Erro WebSocket:', error);
-                this.game.showToast('Erro de conexão multiplayer', 'error');
+                this.handleDisconnection();
             };
 
         } catch (error) {
             console.error('❌ Erro ao conectar:', error);
-            this.game.showToast('Servidor multiplayer indisponível', 'error');
+            this.handleDisconnection();
+        }
+    }
+
+    getWebSocketUrl() {
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const hostname = window.location.hostname;
+        
+        // Se estiver em localhost, usar porta específica
+        if (hostname === 'localhost' || hostname === '127.0.0.1') {
+            return `${protocol}//${hostname}:3003`;
+        }
+        
+        // Se estiver em produção (Netlify), tentar porta padrão
+        return `${protocol}//${hostname}:3003`;
+    }
+
+    handleDisconnection() {
+        this.isConnected = false;
+        this.stopPing();
+        
+        if (this.reconnectAttempts < this.maxReconnectAttempts) {
+            this.reconnectAttempts++;
+            const delay = Math.min(1000 * Math.pow(2, this.reconnectAttempts), 30000);
+            
+            console.log(`🔄 Tentativa de reconexão ${this.reconnectAttempts}/${this.maxReconnectAttempts} em ${delay}ms`);
+            this.game.showToast(`Reconectando... (${this.reconnectAttempts}/${this.maxReconnectAttempts})`, 'warning');
+            
+            this.reconnectInterval = setTimeout(() => {
+                this.attemptConnection();
+            }, delay);
+        } else {
+            console.log('❌ Limite de tentativas de reconexão atingido');
+            this.game.showToast('Conexão multiplayer perdida. Clique em "Jogar Junto" para tentar novamente.', 'error');
+            this.hideMultiplayerUI();
+        }
+    }
+
+    startPing() {
+        this.pingInterval = setInterval(() => {
+            if (this.isConnected && this.ws && this.ws.readyState === WebSocket.OPEN) {
+                this.send({ type: 'ping' });
+            }
+        }, 25000); // Ping a cada 25 segundos
+    }
+
+    stopPing() {
+        if (this.pingInterval) {
+            clearInterval(this.pingInterval);
+            this.pingInterval = null;
         }
     }
 
@@ -77,6 +143,10 @@ class MultiplayerManager {
         switch (message.type) {
             case 'connected':
                 console.log('✅ Confirmação de conexão recebida');
+                break;
+
+            case 'pong':
+                // Resposta do ping - conexão está ativa
                 break;
 
             case 'room_state':
@@ -102,7 +172,7 @@ class MultiplayerManager {
 
             case 'purchase_result':
                 if (message.success) {
-                    this.game.showToast(message.message);
+                    this.game.showToast(message.message, 'success');
                 } else {
                     this.game.showToast(message.message, 'error');
                 }
@@ -121,6 +191,9 @@ class MultiplayerManager {
             case 'error':
                 this.game.showToast(message.message, 'error');
                 break;
+
+            default:
+                console.log('Mensagem não reconhecida:', message);
         }
     }
 
@@ -317,13 +390,30 @@ class MultiplayerManager {
 
     // Desconectar
     disconnect() {
+        this.stopPing();
+        
+        if (this.reconnectInterval) {
+            clearTimeout(this.reconnectInterval);
+            this.reconnectInterval = null;
+        }
+        
         if (this.ws) {
             this.ws.close();
+            this.ws = null;
         }
+        
         this.isConnected = false;
+        this.reconnectAttempts = 0;
         this.hideMultiplayerUI();
         this.otherPlayers.clear();
         this.game.showToast('Desconectado do multiplayer');
+    }
+
+    // Reconectar manualmente
+    reconnect() {
+        this.disconnect();
+        this.reconnectAttempts = 0;
+        this.connect(this.playerName);
     }
 
     // Verificar se está conectado
