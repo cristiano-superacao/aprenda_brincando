@@ -198,21 +198,33 @@ class AprenderBrincando {
     // Carregar produtos do servidor
     async loadProducts() {
         try {
-            const response = await fetch(`/api/products?difficulty=${this.difficulty}`);
-            this.products = await response.json();
+            // Usar API do Netlify Functions
+            const response = await fetch(`/.netlify/functions/api/products?difficulty=${this.difficulty}`);
+            if (response.ok) {
+                this.products = await response.json();
+            } else {
+                // Fallback para dados locais se API não estiver disponível
+                this.products = this.getLocalProducts();
+            }
             this.renderProducts();
         } catch (error) {
-            console.error('Erro ao carregar produtos:', error);
+            console.warn('Erro ao carregar produtos da API, usando dados locais:', error);
             // Produtos padrão em caso de erro
-            this.products = [
-                // Fácil
-                { id: 1, name: 'Pão Frances', price: 0.50, emoji: '🍞', image_url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80', points_reward: 3 },
-                { id: 2, name: 'Banana', price: 1.20, emoji: '🍌', image_url: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=400&q=80', points_reward: 5 },
-                { id: 3, name: 'Maçã', price: 1.80, emoji: '🍎', image_url: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=400&q=80', points_reward: 6 },
-                { id: 4, name: 'Bombom', price: 2.50, emoji: '🍫', image_url: 'https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=400&q=80', points_reward: 8 },
-                { id: 5, name: 'Chiclete', price: 1.00, emoji: '🍬', image_url: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&w=400&q=80', points_reward: 4 },
-                { id: 19, name: 'Jujuba', price: 2.00, emoji: '🍬', image_url: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&w=400&q=80', points_reward: 6 },
-                { id: 20, name: 'Laranja', price: 1.50, emoji: '🍊', image_url: 'https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&w=400&q=80', points_reward: 5 },
+            this.products = this.getLocalProducts();
+            this.renderProducts();
+        }
+    }
+
+    getLocalProducts() {
+        return [
+            // Fácil
+            { id: 1, name: 'Pão Frances', price: 0.50, emoji: '🍞', image_url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80', points_reward: 3 },
+            { id: 2, name: 'Banana', price: 1.20, emoji: '🍌', image_url: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=400&q=80', points_reward: 5 },
+            { id: 3, name: 'Maçã', price: 1.80, emoji: '🍎', image_url: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=400&q=80', points_reward: 6 },
+            { id: 4, name: 'Bombom', price: 2.50, emoji: '🍫', image_url: 'https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=400&q=80', points_reward: 8 },
+            { id: 5, name: 'Chiclete', price: 1.00, emoji: '🍬', image_url: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&w=400&q=80', points_reward: 4 },
+            { id: 19, name: 'Jujuba', price: 2.00, emoji: '🍬', image_url: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&w=400&q=80', points_reward: 6 },
+            { id: 20, name: 'Laranja', price: 1.50, emoji: '🍊', image_url: 'https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&w=400&q=80', points_reward: 5 },
                 
                 // Médio
                 { id: 7, name: 'Refrigerante 2L', price: 6.90, emoji: '🥤', image_url: 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=400&q=80', points_reward: 18 },
@@ -265,15 +277,29 @@ class AprenderBrincando {
     // Inicializar usuário
     async initializeUser() {
         try {
-            // Tentar recuperar usuário existente ou criar novo
+            // Usar sistema de perfil de jogador se disponível
+            if (window.playerProfile) {
+                const currentPlayer = window.playerProfile.getCurrentPlayer();
+                if (currentPlayer) {
+                    this.currentUser = currentPlayer;
+                    this.balance = currentPlayer.balance || 50;
+                    this.level = currentPlayer.level || 1;
+                    this.points = currentPlayer.experience || 0;
+                    this.updateDisplay();
+                    return;
+                }
+            }
+
+            // Fallback para sistema antigo ou API
             const userId = localStorage.getItem('userId');
             if (userId) {
-                const response = await fetch(`/api/user/${userId}`);
+                const response = await fetch(`/.netlify/functions/api/player/${userId}`);
                 if (response.ok) {
-                    this.currentUser = await response.json();
+                    const data = await response.json();
+                    this.currentUser = data.player;
                     this.balance = this.currentUser.balance;
                     this.level = this.currentUser.level;
-                    this.points = this.currentUser.points;
+                    this.points = this.currentUser.experience;
                 } else {
                     await this.createUser();
                 }
@@ -281,27 +307,43 @@ class AprenderBrincando {
                 await this.createUser();
             }
         } catch (error) {
-            console.error('Erro ao inicializar usuário:', error);
+            console.warn('Erro ao inicializar usuário, usando modo offline:', error);
             // Modo offline
-            this.currentUser = { id: 'offline', name: 'Jogador', balance: 0, level: 1, points: 0 };
+            this.currentUser = { id: 'offline', name: 'Jogador', balance: 50, level: 1, points: 0 };
+            this.balance = 50;
+            this.level = 1;
+            this.points = 0;
         }
         this.updateDisplay();
     }
 
     async createUser() {
         try {
-            const response = await fetch('/api/user', {
+            // Se existe sistema de perfil, usar ele
+            if (window.playerProfile) {
+                window.playerProfile.showCreateModal();
+                return;
+            }
+
+            // Fallback para API
+            const response = await fetch('/.netlify/functions/api/player/create', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ name: 'Jogador' })
+                body: JSON.stringify({ 
+                    name: 'Jogador',
+                    age: 10,
+                    grade: '5º Ano',
+                    avatar: 'student1'
+                })
             });
             
             if (response.ok) {
-                this.currentUser = await response.json();
+                const data = await response.json();
+                this.currentUser = data.player;
                 localStorage.setItem('userId', this.currentUser.id);
-                this.balance = 0;
-                this.level = 1;
-                this.points = 0;
+                this.balance = this.currentUser.balance;
+                this.level = this.currentUser.level;
+                this.points = this.currentUser.experience;
             }
         } catch (error) {
             console.error('Erro ao criar usuário:', error);
