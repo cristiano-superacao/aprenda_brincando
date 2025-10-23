@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🛒 Mercadinho do Cristhian</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛒</text></svg>">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <div class="title-section">
+                <h1>🛒 Mercadinho do Cristhian</h1>
+                <p>Vamos fazer compras!</p>
+            </div>
+            
+            <div class="player-status">
+                <div class="balance">
+                    <span class="label">Saldo</span>
+                    <span class="value" id="balance">R$ 0,00</span>
+                </div>
+                
+                <div class="level">
+                    <div class="level-icon" id="levelIcon">🌱</div>
+                    <div class="level-info">
+                        <div class="level-name" id="levelName">Iniciante</div>
+                        <div class="level-details">
+                            <span class="level-number" id="levelNumber">Nível 1</span>
+                            <span class="points" id="points">0 Pontos</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dificuldade -->
+        <section>
+            <h2>Escolha a Dificuldade:</h2>
+            <div class="difficulty-buttons">
+                <button class="difficulty-btn active" data-difficulty="facil">Fácil</button>
+                <button class="difficulty-btn" data-difficulty="medio">Médio</button>
+                <button class="difficulty-btn" data-difficulty="dificil">Difícil</button>
+            </div>
+        </section>
+
+        <!-- Moedas e Notas -->
+        <section>
+            <h2>💰 Moedas e Notas</h2>
+            <p class="instruction">Arraste as moedas e notas para o caixa</p>
+            <div class="money-grid">
+                <!-- Moedas -->
+                <div class="money-item" draggable="true" data-value="0.05">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/5_centavos_2019.jpg/150px-5_centavos_2019.jpg" alt="5 centavos" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">5¢</div>
+                </div>
+                <div class="money-item" draggable="true" data-value="0.10">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/10_centavos_2019.jpg/150px-10_centavos_2019.jpg" alt="10 centavos" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">10¢</div>
+                </div>
+                <div class="money-item" draggable="true" data-value="0.25">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/84/25_centavos_2019.jpg/150px-25_centavos_2019.jpg" alt="25 centavos" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">25¢</div>
+                </div>
+                <div class="money-item" draggable="true" data-value="0.50">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f8/50_centavos_2019.jpg/150px-50_centavos_2019.jpg" alt="50 centavos" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">50¢</div>
+                </div>
+                <div class="money-item" draggable="true" data-value="1.00">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/7e/1_real_2019.jpg/150px-1_real_2019.jpg" alt="1 real" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">R$ 1,00</div>
+                </div>
+                
+                <!-- Cédulas -->
+                <div class="money-item" draggable="true" data-value="2.00">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/ed/2_reais_reverso.jpg/200px-2_reais_reverso.jpg" alt="2 reais" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">R$ 2,00</div>
+                </div>
+                <div class="money-item" draggable="true" data-value="5.00">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/f/f7/5_reais_reverso.jpg/200px-5_reais_reverso.jpg" alt="5 reais" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">R$ 5,00</div>
+                </div>
+                <div class="money-item" draggable="true" data-value="10.00">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/10_reais_reverso.jpg/200px-10_reais_reverso.jpg" alt="10 reais" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">R$ 10,00</div>
+                </div>
+                <div class="money-item" draggable="true" data-value="20.00">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/08/20_reais_reverso.jpg/200px-20_reais_reverso.jpg" alt="20 reais" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">R$ 20,00</div>
+                </div>
+                <div class="money-item" draggable="true" data-value="50.00">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a0/50_reais_reverso.jpg/200px-50_reais_reverso.jpg" alt="50 reais" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">R$ 50,00</div>
+                </div>
+                <div class="money-item" draggable="true" data-value="100.00">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/100_reais_reverso.jpg/200px-100_reais_reverso.jpg" alt="100 reais" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
+                    <div class="money-value" style="display:none">R$ 100,00</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Produtos -->
+        <section>
+            <h2>🍦 Produtos</h2>
+            <p class="instruction">Arraste os produtos para comprar</p>
+            <div class="products-grid" id="productsContainer">
+                <!-- Produtos serão carregados dinamicamente -->
+            </div>
+        </section>
+
+        <!-- Caixa -->
+        <section>
+            <h2>🛒 Caixa</h2>
+            <div class="cart-container" id="cartDropArea">
+                <div class="cart-drop-zone">
+                    <div class="cart-icon">📦</div>
+                    <p>Arraste moedas, notas e produtos aqui</p>
+                    <p class="cart-subtitle">Seu saldo será atualizado automaticamente</p>
+                </div>
+                <div class="cart-items" id="cartItemsDisplay">
+                    <!-- Itens do carrinho aparecerão aqui -->
+                </div>
+            </div>
+            
+            <div class="cart-actions">
+                <button class="action-btn" id="historyBtn">📋 Ver Histórico</button>
+                <button class="action-btn restart-btn" id="restartBtn">🔄 Recomeçar Jogo</button>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>🛒 Mercadinho do Cristhian - Diversão e Aprendizado</p>
+            <p>Desenvolvido com 💜 para as crianças</p>
+            <div class="manus-logo">
+                <img src="https://via.placeholder.com/100x30/9c27b0/ffffff?text=Manus" alt="Manus" class="manus-image">
+                <p>Powered by Manus</p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Botão Multiplayer -->
+    <button id="multiplayerBtn" class="multiplayer-btn">
+        🎮 Jogar Juntos
+    </button>
+
+    <!-- Modal -->
+    <div class="modal" id="historyModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>📋 Histórico de Transações</h3>
+                <button class="close-btn" id="closeHistoryModal">&times;</button>
+            </div>
+            <div class="modal-body" id="historyContent">
+                <!-- Histórico será carregado aqui -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="multiplayer.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

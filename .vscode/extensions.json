@@ -1,0 +1,18 @@
+{
+  "recommendations": [
+    "ms-vscode.vscode-json",
+    "bradlc.vscode-tailwindcss",
+    "esbenp.prettier-vscode",
+    "ms-python.python",
+    "ms-python.flake8",
+    "ms-vscode.vscode-eslint",
+    "formulahendry.auto-rename-tag",
+    "ms-vscode.live-server",
+    "ritwickdey.liveserver",
+    "ms-vscode.vscode-typescript-next",
+    "christian-kohler.path-intellisense",
+    "ms-vscode.hexeditor",
+    "redhat.vscode-yaml",
+    "ms-vscode.powershell"
+  ]
+}

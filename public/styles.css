@@ -1,0 +1,962 @@
+/* Reset e Base */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #9c27b0 0%, #e91e63 100%);
+    min-height: 100vh;
+    color: #333;
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    padding: 20px 0;
+    border-bottom: 2px solid #f0f0f0;
+    background: linear-gradient(135deg, #9c27b0, #8e24aa);
+    margin: -20px -20px 40px -20px;
+    padding: 30px 20px;
+    border-radius: 20px 20px 0 0;
+    color: white;
+}
+
+.title-section h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: white;
+    margin-bottom: 5px;
+}
+
+.title-section p {
+    font-size: 1.1rem;
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: 400;
+}
+
+.player-status {
+    display: flex;
+    gap: 30px;
+    align-items: center;
+}
+
+.balance {
+    text-align: center;
+    background: linear-gradient(135deg, #e91e63, #ad1457);
+    color: white;
+    padding: 15px 25px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(233, 30, 99, 0.3);
+}
+
+.balance .label {
+    display: block;
+    font-size: 0.9rem;
+    opacity: 0.9;
+    margin-bottom: 5px;
+}
+
+.balance .value {
+    display: block;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.level {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    background: white;
+    padding: 15px 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.level-icon {
+    font-size: 2rem;
+}
+
+.level-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.level-name {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.level-details {
+    display: flex;
+    gap: 10px;
+}
+
+.level-number {
+    font-size: 1rem;
+    font-weight: 500;
+    color: #718096;
+}
+
+.points {
+    font-size: 0.9rem;
+    color: #ed8936;
+    font-weight: 500;
+}
+
+/* Seções */
+section {
+    margin-bottom: 40px;
+}
+
+section h2 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: relative;
+}
+
+section h2::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(90deg, #e2e8f0, transparent);
+    margin-left: 20px;
+}
+
+.instruction {
+    color: #718096;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    text-align: center;
+    padding: 15px;
+    background: rgba(247, 250, 252, 0.8);
+    border-radius: 10px;
+    border-left: 4px solid #667eea;
+}
+
+/* Botões de Dificuldade */
+.difficulty-buttons {
+    display: flex;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.difficulty-btn {
+    padding: 12px 30px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    color: #4a5568;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.difficulty-btn:hover {
+    border-color: #9c27b0;
+    color: #9c27b0;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.2);
+}
+
+.difficulty-btn.active {
+    background: linear-gradient(135deg, #9c27b0, #8e24aa);
+    color: white;
+    border-color: transparent;
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+}
+
+/* Grid de Moedas */
+.money-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(247, 250, 252, 0.7);
+    border-radius: 15px;
+    border: 2px dashed #cbd5e0;
+}
+
+.money-item {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 15px;
+    padding: 10px;
+    text-align: center;
+    cursor: grab;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    min-height: 80px;
+    justify-content: center;
+}
+
+.money-image {
+    max-width: 60px;
+    max-height: 60px;
+    object-fit: contain;
+    border-radius: 8px;
+}
+
+.money-item:hover {
+    border-color: #e91e63;
+    transform: translateY(-3px);
+    box-shadow: 0 8px 20px rgba(233, 30, 99, 0.2);
+    background: #fce4ec;
+}
+
+.money-item:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+.money-value {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+/* Grid de Produtos */
+.products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px;
+    margin-bottom: 30px;
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 10px;
+    border-radius: 15px;
+    background: rgba(247, 250, 252, 0.5);
+}
+
+.product-item {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: grab;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+    min-height: 280px;
+    display: flex;
+    flex-direction: column;
+}
+
+.product-item:hover {
+    border-color: #ed8936;
+    transform: translateY(-5px);
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+}
+
+.product-item:active {
+    cursor: grabbing;
+    transform: scale(0.95);
+}
+
+.product-image {
+    width: 100%;
+    height: 140px;
+    object-fit: cover;
+    background: #f7fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.product-info {
+    padding: 15px;
+    text-align: center;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.product-emoji {
+    font-size: 1.8rem;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.product-name {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #4a5568;
+    margin-bottom: 6px;
+    line-height: 1.2;
+}
+
+.product-price {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #48bb78;
+    margin-top: auto;
+}
+
+/* Caixa/Carrinho */
+.cart-container {
+    background: #f7fafc;
+    border: 3px dashed #cbd5e0;
+    border-radius: 20px;
+    padding: 40px;
+    text-align: center;
+    margin-bottom: 20px;
+    min-height: 200px;
+    transition: all 0.3s ease;
+}
+
+.cart-container.drag-over {
+    border-color: #48bb78;
+    background: #f0fff4;
+    transform: scale(1.02);
+}
+
+.cart-drop-zone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.cart-icon {
+    font-size: 3rem;
+    opacity: 0.6;
+}
+
+.cart-drop-zone p {
+    font-size: 1.2rem;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.cart-subtitle {
+    font-size: 1rem !important;
+    color: #718096 !important;
+    font-weight: 400 !important;
+}
+
+.cart-items {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-top: 20px;
+}
+
+.cart-item {
+    background: white;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 15px;
+    text-align: center;
+    position: relative;
+}
+
+.remove-btn {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #e53e3e;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Ações do Carrinho */
+.cart-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.action-btn {
+    padding: 12px 25px;
+    border: 2px solid #e2e8f0;
+    background: white;
+    color: #4a5568;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.action-btn:hover {
+    border-color: #667eea;
+    color: #667eea;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.2);
+}
+
+.restart-btn:hover {
+    border-color: #e53e3e;
+    color: #e53e3e;
+    box-shadow: 0 4px 15px rgba(229, 62, 62, 0.2);
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 20px;
+    max-width: 600px;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 2px solid #f0f0f0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #718096;
+    padding: 5px;
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #48bb78;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    font-weight: 500;
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1001;
+    box-shadow: 0 4px 15px rgba(72, 187, 120, 0.3);
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.error {
+    background: #e53e3e;
+    box-shadow: 0 4px 15px rgba(229, 62, 62, 0.3);
+}
+
+/* Footer */
+.footer {
+    text-align: center;
+    padding: 30px 20px;
+    color: #718096;
+    font-size: 0.9rem;
+    border-top: 2px solid #f0f0f0;
+    margin-top: 40px;
+}
+
+.footer p {
+    margin-bottom: 5px;
+}
+
+.manus-logo {
+    margin-top: 20px;
+    opacity: 0.7;
+}
+
+.manus-image {
+    height: 30px;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+
+.manus-logo p {
+    font-size: 0.8rem;
+}
+
+/* Interface Multiplayer */
+.multiplayer-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 300px;
+    max-height: 80vh;
+    background: white;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    overflow: hidden;
+    border: 2px solid #9c27b0;
+}
+
+.multiplayer-header {
+    background: linear-gradient(135deg, #9c27b0, #8e24aa);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.multiplayer-header h3 {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.disconnect-btn {
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.disconnect-btn:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.players-list {
+    max-height: 200px;
+    overflow-y: auto;
+    padding: 10px;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.player-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 8px 10px;
+    margin-bottom: 5px;
+    border-radius: 8px;
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+}
+
+.player-item.current-player {
+    background: linear-gradient(135deg, #e91e63, #ad1457);
+    color: white;
+    border-color: #ad1457;
+}
+
+.player-name {
+    font-weight: 500;
+    font-size: 0.9rem;
+}
+
+.player-stats {
+    font-size: 0.8rem;
+    font-weight: 400;
+    opacity: 0.8;
+}
+
+.chat-section {
+    height: 250px;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background: #f7fafc;
+}
+
+.chat-message {
+    margin-bottom: 8px;
+    padding: 6px 10px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    line-height: 1.3;
+}
+
+.chat-message.own-message {
+    background: #e91e63;
+    color: white;
+    margin-left: 20px;
+    border-radius: 10px 10px 3px 10px;
+}
+
+.chat-message.other-message {
+    background: white;
+    border: 1px solid #e2e8f0;
+    margin-right: 20px;
+    border-radius: 10px 10px 10px 3px;
+}
+
+.message-author {
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.message-text {
+    word-wrap: break-word;
+}
+
+.chat-input {
+    display: flex;
+    padding: 10px;
+    background: white;
+    border-top: 1px solid #e2e8f0;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    outline: none;
+}
+
+.chat-input input:focus {
+    border-color: #9c27b0;
+}
+
+.chat-input button {
+    background: #9c27b0;
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 20px;
+    margin-left: 8px;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.chat-input button:hover {
+    background: #8e24aa;
+    transform: translateY(-1px);
+}
+
+/* Botão Multiplayer */
+.multiplayer-btn {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: linear-gradient(135deg, #9c27b0, #8e24aa);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
+    transition: all 0.3s ease;
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.multiplayer-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(156, 39, 176, 0.4);
+}
+
+/* Animações */
+@keyframes bounce {
+    0%, 20%, 53%, 80%, 100% {
+        transform: translate3d(0, 0, 0);
+    }
+    40%, 43% {
+        transform: translate3d(0, -8px, 0);
+    }
+    70% {
+        transform: translate3d(0, -4px, 0);
+    }
+    90% {
+        transform: translate3d(0, -2px, 0);
+    }
+}
+
+.bounce {
+    animation: bounce 1s ease;
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+        border-radius: 15px;
+    }
+    
+    .header {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+        margin: -15px -15px 30px -15px;
+        padding: 20px 15px;
+    }
+    
+    .player-status {
+        flex-direction: column;
+        gap: 15px;
+        width: 100%;
+    }
+    
+    .balance, .level {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .title-section h1 {
+        font-size: 1.8rem;
+    }
+    
+    .title-section p {
+        font-size: 1rem;
+    }
+    
+    .money-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+        gap: 10px;
+        padding: 15px;
+    }
+    
+    .money-item {
+        padding: 8px;
+        min-height: 70px;
+    }
+    
+    .money-image {
+        max-width: 50px;
+        max-height: 50px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 15px;
+        max-height: 400px;
+    }
+    
+    .product-item {
+        min-height: 200px;
+    }
+    
+    .product-image {
+        height: 100px;
+    }
+    
+    .difficulty-buttons {
+        flex-wrap: wrap;
+        gap: 10px;
+    }
+    
+    .difficulty-btn {
+        flex: 1;
+        min-width: 100px;
+        padding: 10px 20px;
+        font-size: 0.9rem;
+    }
+    
+    .cart-container {
+        padding: 20px;
+        min-height: 150px;
+    }
+    
+    .cart-actions {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .action-btn {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .modal-content {
+        margin: 20px;
+        max-width: calc(100% - 40px);
+        max-height: calc(100vh - 40px);
+    }
+    
+    .multiplayer-panel {
+        width: 280px;
+        max-height: 70vh;
+        top: 10px;
+        right: 10px;
+    }
+    
+    .chat-section {
+        height: 200px;
+    }
+    
+    .multiplayer-btn {
+        bottom: 15px;
+        right: 15px;
+        padding: 12px 16px;
+        font-size: 0.9rem;
+    }
+}
+
+/* Responsividade para tablets */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        margin: 15px;
+        padding: 20px;
+    }
+    
+    .header {
+        flex-direction: row;
+        align-items: center;
+    }
+    
+    .player-status {
+        flex-direction: row;
+        gap: 20px;
+    }
+    
+    .money-grid {
+        grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+        gap: 12px;
+    }
+    
+    .products-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 18px;
+    }
+    
+    .difficulty-buttons {
+        justify-content: center;
+        gap: 15px;
+    }
+    
+    .multiplayer-panel {
+        width: 320px;
+        top: 15px;
+        right: 15px;
+    }
+}
+
+/* Melhorias para touch devices */
+@media (pointer: coarse) {
+    .money-item, .product-item {
+        cursor: pointer;
+        user-select: none;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+    }
+    
+    .money-item:active, .product-item:active {
+        transform: scale(0.95);
+        opacity: 0.8;
+    }
+    
+    .difficulty-btn, .action-btn {
+        min-height: 44px; /* Apple recomenda 44px para touch targets */
+        touch-action: manipulation;
+    }
+    
+    .chat-input input, .chat-input button {
+        min-height: 40px;
+        font-size: 16px; /* Previne zoom automático no iOS */
+    }
+}
+
+/* Orientação landscape para celulares */
+@media (max-width: 768px) and (orientation: landscape) {
+    .header {
+        flex-direction: row;
+        padding: 15px;
+    }
+    
+    .player-status {
+        flex-direction: row;
+        gap: 15px;
+    }
+    
+    .money-grid {
+        grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    }
+    
+    .products-grid {
+        max-height: 300px;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    }
+    
+    .multiplayer-panel {
+        max-height: 60vh;
+        width: 250px;
+    }
+    
+    .chat-section {
+        height: 150px;
+    }
+}

@@ -1,0 +1,30 @@
+{
+  "name": "mercadinho-cristhian",
+  "version": "1.0.0",
+  "description": "Mercadinho do Cristhian - Jogo Educativo",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "multiplayer": "node src/multiplayer-server.js",
+    "test": "python teste-mercadinho.py"
+  },
+  "keywords": [
+    "educacao",
+    "financeira",
+    "criancas",
+    "mercadinho",
+    "cristhian"
+  ],
+  "author": "Mercadinho do Cristhian",
+  "license": "MIT",
+  "dependencies": {
+    "@neondatabase/serverless": "^0.9.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "ws": "^8.14.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
