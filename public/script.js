@@ -105,7 +105,14 @@ class AprenderBrincando {
         this.products.forEach(product => {
             const productElement = document.createElement('div');
             productElement.className = 'product-item';
-            productElement.draggable = true;
+            
+            // Adicionar dados do produto como data-attributes
+            productElement.dataset.id = product.id;
+            productElement.dataset.name = product.name;
+            productElement.dataset.price = product.price;
+            productElement.dataset.image = product.image_url;
+            productElement.dataset.emoji = product.emoji;
+            productElement.dataset.points = product.points_reward;
             
             productElement.innerHTML = `
                 <img src="${product.image_url}" alt="${product.name}" class="product-image" loading="lazy">
@@ -116,8 +123,7 @@ class AprenderBrincando {
                 </div>
             `;
 
-            // Configurar drag para produtos
-            // Remover atributos de drag para usar sistema de clique
+            // Configurar clique
             productElement.style.cursor = 'pointer';
             productElement.title = `Clique para comprar ${product.name}`;
 
@@ -230,20 +236,7 @@ class AprenderBrincando {
         }
         
         this.cartItems.push(item);
-        
-        const itemElement = document.createElement('div');
-        itemElement.className = 'cart-item';
-        itemElement.innerHTML = `
-            <span class="product-emoji">${item.emoji}</span>
-            <p>${item.name}</p>
-            ${item.price ? `<p>R$ ${item.price.toFixed(2)}</p>` : ''}
-            <button class="remove-btn" onclick="game.removeCartItem(${this.cartItems.length - 1})">×</button>
-        `;
-        
-        cartItems.appendChild(itemElement);
-        
-        // Animação de entrada
-        itemElement.classList.add('bounce');
+        this.updateCartDisplay();
     }
 
     // Remover item do carrinho
@@ -265,7 +258,7 @@ class AprenderBrincando {
 
     // Atualizar display do carrinho
     updateCartDisplay() {
-        const cartItems = document.getElementById('cartItemsDisplay');
+        const cartItems = document.getElementById('cartItems');
         const cartDropZone = document.querySelector('.cart-drop-zone');
         
         cartItems.innerHTML = '';
@@ -284,6 +277,9 @@ class AprenderBrincando {
                     <button class="remove-btn" onclick="game.removeCartItem(${index})">×</button>
                 `;
                 cartItems.appendChild(itemElement);
+                
+                // Animação de entrada
+                itemElement.classList.add('bounce');
             });
         }
     }
@@ -548,6 +544,12 @@ class AprenderBrincando {
         document.getElementById('selectedMoney').style.display = 'none';
         document.getElementById('selectedProduct').style.display = 'none';
         document.getElementById('selectionButtons').style.display = 'none';
+    }
+
+    // Configurar multiplayer (método placeholder)
+    setupMultiplayer() {
+        // Multiplayer será configurado via script separado
+        console.log('Multiplayer disponível');
     }
 }
 
