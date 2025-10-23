@@ -46,17 +46,21 @@
             </div>
         </section>
 
-        <!-- Moedas e Notas -->
-        <section>
-            <h2>💰 Moedas e Notas</h2>
-            <p class="instruction">Arraste as moedas e notas para o caixa</p>
-            <div class="money-grid">
+        <!-- Layout de Duas Colunas -->
+        <div class="two-columns-layout">
+            <!-- Coluna Esquerda: Dinheiro e Produtos -->
+            <div class="left-column">
+                <!-- Moedas e Notas -->
+                <section>
+                    <h2>💰 Moedas e Notas</h2>
+                    <p class="instruction">👆 Clique nas moedas e notas</p>
+                    <div class="money-grid">
                 <!-- Moedas -->
-                <div class="money-item" draggable="true" data-value="0.05">
+                <div class="money-item" data-value="0.05" style="cursor: pointer;" title="Clique para usar">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/5_centavos_2019.jpg/150px-5_centavos_2019.jpg" alt="5 centavos" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div class="money-value" style="display:none">5¢</div>
                 </div>
-                <div class="money-item" draggable="true" data-value="0.10">
+                <div class="money-item" data-value="0.10" style="cursor: pointer;" title="Clique para usar">
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b1/10_centavos_2019.jpg/150px-10_centavos_2019.jpg" alt="10 centavos" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div class="money-value" style="display:none">10¢</div>
                 </div>
@@ -98,37 +102,63 @@
                     <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/c/cd/100_reais_reverso.jpg/200px-100_reais_reverso.jpg" alt="100 reais" class="money-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';">
                     <div class="money-value" style="display:none">R$ 100,00</div>
                 </div>
-            </div>
-        </section>
+                    </div>
+                </section>
 
-        <!-- Produtos -->
-        <section>
-            <h2>🍦 Produtos</h2>
-            <p class="instruction">Arraste os produtos para comprar</p>
-            <div class="products-grid" id="productsContainer">
-                <!-- Produtos serão carregados dinamicamente -->
+                <!-- Produtos -->
+                <section>
+                    <h2>🍦 Produtos</h2>
+                    <p class="instruction">👆 Clique nos produtos para comprar</p>
+                    <div class="products-grid" id="productsContainer">
+                        <!-- Produtos serão carregados dinamicamente -->
+                    </div>
+                </section>
             </div>
-        </section>
 
-        <!-- Caixa -->
-        <section>
-            <h2>🛒 Caixa</h2>
-            <div class="cart-container" id="cartDropArea">
-                <div class="cart-drop-zone">
-                    <div class="cart-icon">📦</div>
-                    <p>Arraste moedas, notas e produtos aqui</p>
-                    <p class="cart-subtitle">Seu saldo será atualizado automaticamente</p>
-                </div>
-                <div class="cart-items" id="cartItemsDisplay">
-                    <!-- Itens do carrinho aparecerão aqui -->
-                </div>
+            <!-- Coluna Direita: Caixa -->
+            <div class="right-column">
+                <section class="caixa-section">
+                    <h2>🛒 Caixa</h2>
+                    
+                    <!-- Área de Seleção Atual -->
+                    <div class="selection-display" id="selectionDisplay">
+                        <h3>💰 Dinheiro Selecionado</h3>
+                        <div class="selected-item" id="selectedMoney" style="display: none;">
+                            <img id="selectedMoneyImage" src="" alt="" class="selected-image">
+                            <p id="selectedMoneyValue">R$ 0,00</p>
+                        </div>
+                        
+                        <h3>🛍️ Produto Selecionado</h3>
+                        <div class="selected-item" id="selectedProduct" style="display: none;">
+                            <img id="selectedProductImage" src="" alt="" class="selected-image">
+                            <p id="selectedProductName">Nenhum produto</p>
+                            <p id="selectedProductPrice">R$ 0,00</p>
+                        </div>
+                        
+                        <div class="selection-buttons" id="selectionButtons" style="display: none;">
+                            <button class="confirm-btn" id="confirmButton">✅ Confirmar</button>
+                            <button class="cancel-btn" id="cancelButton">❌ Cancelar</button>
+                        </div>
+                    </div>
+                    
+                    <!-- Carrinho -->
+                    <div class="cart-container" id="cartDropArea">
+                        <div class="cart-drop-zone">
+                            <div class="cart-icon">📦</div>
+                            <p>Seus itens aparecerão aqui</p>
+                        </div>
+                        <div class="cart-items" id="cartItemsDisplay">
+                            <!-- Itens do carrinho aparecerão aqui -->
+                        </div>
+                    </div>
+                    
+                    <div class="cart-actions">
+                        <button class="action-btn" id="historyBtn">📋 Ver Histórico</button>
+                        <button class="action-btn restart-btn" id="restartBtn">🔄 Recomeçar</button>
+                    </div>
+                </section>
             </div>
-            
-            <div class="cart-actions">
-                <button class="action-btn" id="historyBtn">📋 Ver Histórico</button>
-                <button class="action-btn restart-btn" id="restartBtn">🔄 Recomeçar Jogo</button>
-            </div>
-        </section>
+        </div>
 
         <!-- Footer -->
         <footer class="footer">

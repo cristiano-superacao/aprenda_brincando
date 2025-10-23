@@ -31,45 +31,24 @@ class AprenderBrincando {
             });
         });
 
-        // Drag and drop para moedas
-        document.querySelectorAll('.money-item').forEach(item => {
-            item.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', JSON.stringify({
-                    type: 'money',
-                    value: parseFloat(e.target.dataset.value)
-                }));
-                e.target.style.opacity = '0.5';
-            });
-
-            item.addEventListener('dragend', (e) => {
-                e.target.style.opacity = '1';
-            });
-        });
-
-        // Configurar drop zone do carrinho
-        const cartContainer = document.getElementById('cartDropArea');
-        cartContainer.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            cartContainer.classList.add('drag-over');
-        });
-
-        cartContainer.addEventListener('dragleave', (e) => {
-            cartContainer.classList.remove('drag-over');
-        });
-
-        cartContainer.addEventListener('drop', (e) => {
-            e.preventDefault();
-            cartContainer.classList.remove('drag-over');
+        // Sistema de clique para interação (substituindo drag and drop)
+        document.addEventListener('click', (e) => {
+            const moneyItem = e.target.closest('.money-item');
+            const productItem = e.target.closest('.product-item');
             
-            try {
-                const data = JSON.parse(e.dataTransfer.getData('text/plain'));
-                if (data.type === 'money') {
-                    this.addMoney(data.value);
-                } else if (data.type === 'product') {
-                    this.buyProduct(data.product);
-                }
-            } catch (error) {
-                console.error('Erro ao processar drop:', error);
+            if (moneyItem && !e.target.closest('#cartDropArea')) {
+                const value = parseFloat(moneyItem.dataset.value);
+                this.showActionModal('money', { value }, moneyItem);
+            } else if (productItem && !e.target.closest('#cartDropArea')) {
+                const product = {
+                    id: parseInt(productItem.dataset.id),
+                    name: productItem.dataset.name,
+                    price: parseFloat(productItem.dataset.price),
+                    image_url: productItem.dataset.image,
+                    emoji: productItem.dataset.emoji,
+                    points_reward: parseInt(productItem.dataset.points)
+                };
+                this.showActionModal('product', product, productItem);
             }
         });
 
@@ -138,17 +117,9 @@ class AprenderBrincando {
             `;
 
             // Configurar drag para produtos
-            productElement.addEventListener('dragstart', (e) => {
-                e.dataTransfer.setData('text/plain', JSON.stringify({
-                    type: 'product',
-                    product: product
-                }));
-                e.target.style.opacity = '0.5';
-            });
-
-            productElement.addEventListener('dragend', (e) => {
-                e.target.style.opacity = '1';
-            });
+            // Remover atributos de drag para usar sistema de clique
+            productElement.style.cursor = 'pointer';
+            productElement.title = `Clique para comprar ${product.name}`;
 
             productsGrid.appendChild(productElement);
         });
@@ -488,6 +459,95 @@ class AprenderBrincando {
         setTimeout(() => {
             toast.classList.remove('show');
         }, 3000);
+    }
+
+    // Mostrar seleção na coluna direita
+    showActionModal(type, data, element) {
+        this.currentSelection = { type, data, element };
+        
+        if (type === 'money') {
+            this.showSelectedMoney(data, element);
+        } else if (type === 'product') {
+            this.showSelectedProduct(data);
+        }
+        
+        // Mostrar botões de confirmação
+        document.getElementById('selectionButtons').style.display = 'flex';
+        
+        // Configurar botões se não estiverem configurados
+        if (!this.buttonsConfigured) {
+            this.setupSelectionButtons();
+            this.buttonsConfigured = true;
+        }
+    }
+
+    // Mostrar dinheiro selecionado
+    showSelectedMoney(data, element) {
+        const selectedMoney = document.getElementById('selectedMoney');
+        const moneyImage = document.getElementById('selectedMoneyImage');
+        const moneyValue = document.getElementById('selectedMoneyValue');
+        
+        moneyImage.src = element.querySelector('.money-image').src;
+        moneyImage.alt = `R$ ${data.value}`;
+        moneyValue.textContent = `R$ ${data.value.toFixed(2)}`;
+        
+        selectedMoney.style.display = 'flex';
+        
+        // Esconder produto se estiver selecionado
+        document.getElementById('selectedProduct').style.display = 'none';
+    }
+
+    // Mostrar produto selecionado
+    showSelectedProduct(data) {
+        const selectedProduct = document.getElementById('selectedProduct');
+        const productImage = document.getElementById('selectedProductImage');
+        const productName = document.getElementById('selectedProductName');
+        const productPrice = document.getElementById('selectedProductPrice');
+        
+        productImage.src = data.image_url;
+        productImage.alt = data.name;
+        productName.textContent = data.name;
+        productPrice.textContent = `R$ ${data.price.toFixed(2)}`;
+        
+        selectedProduct.style.display = 'flex';
+        
+        // Esconder dinheiro se estiver selecionado
+        document.getElementById('selectedMoney').style.display = 'none';
+    }
+
+    // Configurar botões de seleção
+    setupSelectionButtons() {
+        document.getElementById('confirmButton').addEventListener('click', () => {
+            this.confirmSelection();
+        });
+        
+        document.getElementById('cancelButton').addEventListener('click', () => {
+            this.cancelSelection();
+        });
+    }
+
+    // Confirmar seleção
+    confirmSelection() {
+        if (!this.currentSelection) return;
+        
+        const { type, data } = this.currentSelection;
+        
+        if (type === 'money') {
+            this.addMoney(data.value);
+            this.showToast(`💰 R$ ${data.value.toFixed(2)} adicionado ao carrinho!`);
+        } else if (type === 'product') {
+            this.buyProduct(data);
+        }
+        
+        this.cancelSelection();
+    }
+
+    // Cancelar seleção
+    cancelSelection() {
+        this.currentSelection = null;
+        document.getElementById('selectedMoney').style.display = 'none';
+        document.getElementById('selectedProduct').style.display = 'none';
+        document.getElementById('selectionButtons').style.display = 'none';
     }
 }
 
