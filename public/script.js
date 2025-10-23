@@ -213,6 +213,7 @@ class AprenderBrincando {
         await this.addTransaction('add_money', value, `Adicionado R$ ${value.toFixed(2)}`);
         
         this.updateDisplay();
+        this.showMoneyLearning(value);
     }
 
     // Comprar produto
@@ -237,6 +238,9 @@ class AprenderBrincando {
             emoji: product.emoji,
             price: product.price
         });
+        
+        // Mostrar aprendizado educativo
+        this.showLearningMessage(product);
         
         // Registrar transação
         await this.addTransaction('buy_product', product.price, `Comprou ${product.name}`, product.points_reward);
@@ -576,6 +580,68 @@ class AprenderBrincando {
     setupMultiplayer() {
         // Multiplayer será configurado via script separado
         console.log('Multiplayer disponível');
+    }
+
+    // Mostrar aprendizado educativo
+    showLearningMessage(product) {
+        const learningInfo = document.getElementById('learningInfo');
+        const learningText = document.getElementById('learningText');
+        
+        // Mensagens educativas baseadas no produto e preço
+        const learningMessages = this.getLearningMessage(product);
+        
+        // Destacar o card educativo
+        learningInfo.classList.add('highlight');
+        learningText.textContent = learningMessages.message;
+        
+        // Remover destaque após 5 segundos
+        setTimeout(() => {
+            learningInfo.classList.remove('highlight');
+            learningText.textContent = 'Clique nos produtos para aprender sobre dinheiro!';
+        }, 5000);
+    }
+
+    // Obter mensagem educativa baseada no produto
+    getLearningMessage(product) {
+        const price = product.price;
+        let message = '';
+        
+        // Mensagens baseadas no valor do produto
+        if (price <= 1.00) {
+            message = `💡 Produtos baratos como ${product.name} (R$ ${price.toFixed(2)}) são boas opções para economizar!`;
+        } else if (price <= 3.00) {
+            message = `🎯 ${product.name} custa R$ ${price.toFixed(2)}. Você pode comprar ${Math.floor(this.balance / price)} itens iguais com seu saldo atual!`;
+        } else if (price <= 5.00) {
+            message = `💰 Com R$ ${price.toFixed(2)}, você comprou ${product.name}. Isso é igual a ${Math.ceil(price / 0.25)} moedas de 25 centavos!`;
+        } else {
+            message = `🏆 ${product.name} é um item mais caro (R$ ${price.toFixed(2)}). Você planejou bem seus gastos para comprá-lo!`;
+        }
+        
+        return { message };
+    }
+
+    // Mostrar aprendizado ao adicionar dinheiro
+    showMoneyLearning(value) {
+        const learningInfo = document.getElementById('learningInfo');
+        const learningText = document.getElementById('learningText');
+        
+        let message = '';
+        
+        if (value < 1.00) {
+            message = `🪙 Você adicionou ${value < 1 ? Math.round(value * 100) + ' centavos' : 'R$ ' + value.toFixed(2)}. Moedas pequenas também são importantes!`;
+        } else if (value <= 10.00) {
+            message = `💵 R$ ${value.toFixed(2)} foi adicionado! Você pode comprar vários produtos com esse valor.`;
+        } else {
+            message = `💸 R$ ${value.toFixed(2)} é muito dinheiro! Use com sabedoria e planeje suas compras.`;
+        }
+        
+        learningInfo.classList.add('highlight');
+        learningText.textContent = message;
+        
+        setTimeout(() => {
+            learningInfo.classList.remove('highlight');
+            learningText.textContent = 'Clique nos produtos para aprender sobre dinheiro!';
+        }, 4000);
     }
 }
 

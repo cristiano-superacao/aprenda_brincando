@@ -143,6 +143,48 @@ section h2::after {
     box-shadow: 0 4px 15px rgba(156, 39, 176, 0.3);
 }
 
+/* Texto Educativo */
+.learning-info {
+    margin-top: 20px;
+    padding: 15px;
+    background: linear-gradient(135deg, #f8f9ff, #f1f3ff);
+    border: 2px solid #e2e8f0;
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.learning-info.highlight {
+    background: linear-gradient(135deg, #fef5e7, #fed7aa);
+    border-color: #f59e0b;
+    box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
+    transform: translateY(-2px);
+}
+
+.learning-icon {
+    width: 35px;
+    height: 35px;
+    background: linear-gradient(135deg, #f59e0b, #d97706);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2em;
+    box-shadow: 0 3px 10px rgba(245, 158, 11, 0.3);
+    flex-shrink: 0;
+}
+
+#learningText {
+    margin: 0;
+    color: #4a5568;
+    font-size: 0.95em;
+    font-weight: 500;
+    line-height: 1.4;
+}
+
 /* Layout dos Controles */
 .controls-row {
     display: grid;
