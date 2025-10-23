@@ -12,11 +12,17 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
-# Redirecionamento para WebSocket (em produção usaria um serviço separado)
+# Redirecionamento para WebSocket (simulação REST para produção)
 [[redirects]]
-  from = "/ws"
-  to = "wss://mercadinhodocris-ws.herokuapp.com/"
-  status = 301
+  from = "/ws/*"
+  to = "/.netlify/functions/websocket/:splat"
+  status = 200
+
+# Fallback para SPA
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
 
 # Headers de segurança
 [[headers]]
