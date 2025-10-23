@@ -5,8 +5,11 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
+    "build": "echo 'Build completed - static site ready'",
+    "dev": "node src/server.js",
     "multiplayer": "node src/multiplayer-server.js",
-    "test": "python teste-mercadinho.py"
+    "test": "python teste-mercadinho.py",
+    "deploy": "netlify deploy --prod --dir=public"
   },
   "keywords": [
     "educacao",
