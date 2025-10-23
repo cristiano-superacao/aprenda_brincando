@@ -83,15 +83,24 @@ class AprenderBrincando {
             console.error('Erro ao carregar produtos:', error);
             // Produtos padrão em caso de erro
             this.products = [
-                { id: 1, name: 'Chiclete', price: 0.75, emoji: '�', image_url: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&w=400&q=80', points_reward: 3 },
-                { id: 2, name: 'Doce', price: 1.25, emoji: '�', image_url: 'https://images.unsplash.com/photo-1571115764595-644a1f56a55c?auto=format&fit=crop&w=400&q=80', points_reward: 5 },
-                { id: 3, name: 'Bombom', price: 1.50, emoji: '�', image_url: 'https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=400&q=80', points_reward: 6 },
-                { id: 4, name: 'Chocolate', price: 2.50, emoji: '🍫', image_url: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=400&q=80', points_reward: 8 },
-                { id: 5, name: 'Picolé', price: 3.00, emoji: '🍦', image_url: 'https://images.unsplash.com/photo-1497034825429-c343d7c6a68f?auto=format&fit=crop&w=400&q=80', points_reward: 10 },
-                { id: 6, name: 'Biscoito', price: 3.50, emoji: '�', image_url: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80', points_reward: 9 },
-                { id: 7, name: 'Suco', price: 4.00, emoji: '🧃', image_url: 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=400&q=80', points_reward: 12 },
-                { id: 8, name: 'Bolo Fatia', price: 5.00, emoji: '🍰', image_url: 'https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?auto=format&fit=crop&w=400&q=80', points_reward: 15 },
-                { id: 9, name: 'Sorvete', price: 7.50, emoji: '�', image_url: 'https://images.unsplash.com/photo-1501443762994-82bd5dace89a?auto=format&fit=crop&w=400&q=80', points_reward: 20 }
+                // Fácil
+                { id: 1, name: 'Pão Frances', price: 0.50, emoji: '🍞', image_url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80', points_reward: 3 },
+                { id: 2, name: 'Banana', price: 1.20, emoji: '🍌', image_url: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=400&q=80', points_reward: 5 },
+                { id: 3, name: 'Maçã', price: 1.80, emoji: '🍎', image_url: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=400&q=80', points_reward: 6 },
+                { id: 4, name: 'Bombom', price: 2.50, emoji: '🍫', image_url: 'https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=400&q=80', points_reward: 8 },
+                { id: 5, name: 'Chiclete', price: 1.00, emoji: '🍬', image_url: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&w=400&q=80', points_reward: 4 },
+                { id: 19, name: 'Jujuba', price: 2.00, emoji: '🍬', image_url: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&w=400&q=80', points_reward: 6 },
+                { id: 20, name: 'Laranja', price: 1.50, emoji: '🍊', image_url: 'https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&w=400&q=80', points_reward: 5 },
+                
+                // Médio
+                { id: 7, name: 'Refrigerante 2L', price: 6.90, emoji: '🥤', image_url: 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=400&q=80', points_reward: 18 },
+                { id: 23, name: 'Refrigerante Lata', price: 3.50, emoji: '🥤', image_url: 'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=400&q=80', points_reward: 10 },
+                { id: 24, name: 'Pipoca Doce', price: 4.80, emoji: '🍿', image_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=400&q=80', points_reward: 12 },
+                { id: 25, name: 'Pipoca Salgada', price: 4.50, emoji: '🍿', image_url: 'https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&w=400&q=80', points_reward: 12 },
+                { id: 27, name: 'Morango', price: 5.50, emoji: '🍓', image_url: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=400&q=80', points_reward: 15 },
+                
+                // Difícil
+                { id: 13, name: 'Cesta de Frutas', price: 25.00, emoji: '🧺', image_url: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80', points_reward: 45 }
             ];
             this.renderProducts();
         }

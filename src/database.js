@@ -13,29 +13,41 @@ if (!isDemoMode) {
 let demoData = {
   users: new Map(),
   products: new Map([
-    // Produtos Fáceis - Mercadinho do Cristhian e Isabele
+    // Produtos Fáceis - Mercadinho do Cristhian
     [1, { id: 1, name: 'Pão Frances', price: 0.50, emoji: '🍞', image_url: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 3 }],
     [2, { id: 2, name: 'Banana Prata', price: 1.20, emoji: '🍌', image_url: 'https://images.unsplash.com/photo-1571771894821-ce9b6c11b08e?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 5 }],
     [3, { id: 3, name: 'Maçã Gala', price: 1.80, emoji: '🍎', image_url: 'https://images.unsplash.com/photo-1567306226416-28f0efdc88ce?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 6 }],
     [4, { id: 4, name: 'Bombom Chocolate', price: 2.50, emoji: '🍫', image_url: 'https://images.unsplash.com/photo-1511381939415-e44015466834?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 8 }],
     [5, { id: 5, name: 'Chiclete', price: 1.00, emoji: '🍬', image_url: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 4 }],
     [6, { id: 6, name: 'Pirulito', price: 1.50, emoji: '🍭', image_url: 'https://images.unsplash.com/photo-1571115764595-644a1f56a55c?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 5 }],
+    [19, { id: 19, name: 'Jujuba', price: 2.00, emoji: '🍬', image_url: 'https://images.unsplash.com/photo-1582058091505-f87a2e55a40f?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 6 }],
+    [20, { id: 20, name: 'Laranja', price: 1.50, emoji: '🍊', image_url: 'https://images.unsplash.com/photo-1547514701-42782101795e?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 5 }],
+    [21, { id: 21, name: 'Uva', price: 3.50, emoji: '🍇', image_url: 'https://images.unsplash.com/photo-1537640538966-79f369143f8f?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 9 }],
+    [22, { id: 22, name: 'Pêra', price: 2.20, emoji: '🍐', image_url: 'https://images.unsplash.com/photo-1568702846914-96b305d2aaeb?auto=format&fit=crop&w=400&q=80', difficulty: 'facil', points_reward: 7 }],
     
-    // Produtos Médios - Mercadinho do Cristhian e Isabele
-    [7, { id: 7, name: 'Leite Integral 1L', price: 4.50, emoji: '�', image_url: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 12 }],
-    [8, { id: 8, name: 'Pão de Açúcar', price: 3.80, emoji: '�', image_url: 'https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 10 }],
-    [9, { id: 9, name: 'Refrigerante 2L', price: 6.90, emoji: '�', image_url: 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 18 }],
-    [10, { id: 10, name: 'Chocolate Barra', price: 8.50, emoji: '�', image_url: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 22 }],
+    // Produtos Médios - Mercadinho do Cristhian
+    [7, { id: 7, name: 'Leite Integral 1L', price: 4.50, emoji: '🥛', image_url: 'https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 12 }],
+    [8, { id: 8, name: 'Pão de Açúcar', price: 3.80, emoji: '🥖', image_url: 'https://images.unsplash.com/photo-1506976785307-8732e854ad03?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 10 }],
+    [9, { id: 9, name: 'Refrigerante 2L', price: 6.90, emoji: '🥤', image_url: 'https://images.unsplash.com/photo-1546173159-315724a31696?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 18 }],
+    [10, { id: 10, name: 'Chocolate Barra', price: 8.50, emoji: '🍫', image_url: 'https://images.unsplash.com/photo-1606312619070-d48b4c652a52?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 22 }],
     [11, { id: 11, name: 'Suco de Laranja', price: 5.20, emoji: '🧃', image_url: 'https://images.unsplash.com/photo-1621506289937-a8e4df240d0b?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 15 }],
-    [12, { id: 12, name: 'Biscoito Recheado', price: 7.80, emoji: '�', image_url: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 20 }],
+    [12, { id: 12, name: 'Biscoito Recheado', price: 7.80, emoji: '🍪', image_url: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 20 }],
+    [23, { id: 23, name: 'Refrigerante Lata', price: 3.50, emoji: '🥤', image_url: 'https://images.unsplash.com/photo-1629203851122-3726ecdf080e?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 10 }],
+    [24, { id: 24, name: 'Pipoca Doce', price: 4.80, emoji: '🍿', image_url: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 12 }],
+    [25, { id: 25, name: 'Pipoca Salgada', price: 4.50, emoji: '🍿', image_url: 'https://images.unsplash.com/photo-1585238342024-78d387f4a707?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 12 }],
+    [26, { id: 26, name: 'Abacaxi', price: 6.00, emoji: '🍍', image_url: 'https://images.unsplash.com/photo-1550258987-190a2d41a8ba?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 16 }],
+    [27, { id: 27, name: 'Morango', price: 5.50, emoji: '🍓', image_url: 'https://images.unsplash.com/photo-1464965911861-746a04b4bca6?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 15 }],
+    [28, { id: 28, name: 'Melancia', price: 8.00, emoji: '🍉', image_url: 'https://images.unsplash.com/photo-1587049633312-d628ae50a8ae?auto=format&fit=crop&w=400&q=80', difficulty: 'medio', points_reward: 20 }],
     
-    // Produtos Difíceis - Mercadinho do Cristhian e Isabele
+    // Produtos Difíceis - Mercadinho do Cristhian
     [13, { id: 13, name: 'Cesta de Frutas', price: 25.00, emoji: '🧺', image_url: 'https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 45 }],
     [14, { id: 14, name: 'Kit Café da Manhã', price: 35.50, emoji: '☕', image_url: 'https://images.unsplash.com/photo-1495147466023-ac5c588e2e94?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 55 }],
-    [15, { id: 15, name: 'Caixa de Chocolates', price: 42.90, emoji: '�', image_url: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 65 }],
+    [15, { id: 15, name: 'Caixa de Chocolates', price: 42.90, emoji: '🍫', image_url: 'https://images.unsplash.com/photo-1549465220-1a8b9238cd48?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 65 }],
     [16, { id: 16, name: 'Kit Festa Infantil', price: 68.00, emoji: '🎉', image_url: 'https://images.unsplash.com/photo-1530103862676-de8c9debad1d?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 85 }],
     [17, { id: 17, name: 'Cesta Básica Mini', price: 55.80, emoji: '🛒', image_url: 'https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 75 }],
-    [18, { id: 18, name: 'Kit Lanche Escolar', price: 38.90, emoji: '�', image_url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 60 }]
+    [18, { id: 18, name: 'Kit Lanche Escolar', price: 38.90, emoji: '🎒', image_url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 60 }],
+    [29, { id: 29, name: 'Pack Refrigerantes 6un', price: 18.90, emoji: '🥤', image_url: 'https://images.unsplash.com/photo-1581636625402-29b2a704ef13?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 35 }],
+    [30, { id: 30, name: 'Cesta de Frutas Premium', price: 45.00, emoji: '🧺', image_url: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=400&q=80', difficulty: 'dificil', points_reward: 70 }]
   ]),
   transactions: new Map(),
   userIdCounter: 1
