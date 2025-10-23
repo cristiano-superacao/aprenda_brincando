@@ -28,8 +28,6 @@ class AprenderBrincando {
     get lives() { return this.state.getState('lives'); }
     get difficulty() { return this.state.getState('difficulty'); }
     get streakCount() { return this.state.getState('streakCount') || 0; }
-    get initialMoney() { return this.state.getState('initialMoney') || 0; }
-    get totalSpent() { return this.state.getState('totalSpent') || 0; }
     get maxLives() { return 3; }
     get experienceToNextLevel() { 
         return GameUtils.calculateExpForNextLevel(this.level);
@@ -43,8 +41,6 @@ class AprenderBrincando {
     set lives(value) { this.state.setState({ lives: value }); }
     set difficulty(value) { this.state.setState({ difficulty: value }); }
     set streakCount(value) { this.state.setState({ streakCount: value }); }
-    set initialMoney(value) { this.state.setState({ initialMoney: value }); }
-    set totalSpent(value) { this.state.setState({ totalSpent: value }); }
 
     async init() {
         // Configurar observers para mudanças de estado
@@ -282,13 +278,6 @@ class AprenderBrincando {
 
     // Adicionar dinheiro
     async addMoney(value) {
-        // Se é o primeiro dinheiro adicionado, definir como inicial
-        if (this.initialMoney === 0) {
-            this.initialMoney = value;
-        } else {
-            this.initialMoney += value;
-        }
-        
         this.balance += value;
         await this.updateUserBalance();
         
@@ -321,7 +310,6 @@ class AprenderBrincando {
         }
 
         this.balance -= product.price;
-        this.totalSpent += product.price;
         this.points += product.points_reward;
         this.addExperience(15); // XP por compra
         
@@ -523,8 +511,6 @@ class AprenderBrincando {
     async restartGame() {
         if (confirm('🔄 Tem certeza que deseja recomeçar o jogo? Todo o progresso será perdido.')) {
             this.balance = 0;
-            this.initialMoney = 0;
-            this.totalSpent = 0;
             this.level = 1;
             this.points = 0;
             this.experience = 0;
@@ -558,7 +544,6 @@ class AprenderBrincando {
         this.updateBalanceDisplay();
         this.updateLevelDisplay();
         this.updatePointsDisplay();
-        this.updateStatsDisplay();
         this.updateExperienceDisplay();
         this.updateLivesDisplay();
     }
@@ -576,11 +561,6 @@ class AprenderBrincando {
 
     updatePointsDisplay() {
         GameUtils.safeUpdateElement('points', GameUtils.formatPoints(this.points));
-    }
-
-    updateStatsDisplay() {
-        GameUtils.safeUpdateElement('initialMoney', GameUtils.formatCurrency(this.initialMoney));
-        GameUtils.safeUpdateElement('totalSpent', GameUtils.formatCurrency(this.totalSpent));
     }
 
     updateLivesDisplay() {
