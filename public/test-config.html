@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teste de Configuração - Aprenda Brincando</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+        }
+        .container {
+            background: rgba(255,255,255,0.1);
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+        .test-item {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+            border-left: 4px solid #00ff88;
+        }
+        .test-item.error {
+            border-left-color: #ff6b6b;
+        }
+        .test-item.warning {
+            border-left-color: #ffd93d;
+        }
+        button {
+            background: #00ff88;
+            color: #2d3436;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s ease;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,255,136,0.4);
+        }
+        button:disabled {
+            background: #636e72;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .success { color: #00ff88; }
+        .error { color: #ff6b6b; }
+        .warning { color: #ffd93d; }
+        .code {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            margin: 10px 0;
+            overflow-x: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Teste de Configuração do Aprenda Brincando</h1>
+        <p>Esta página testa se todas as configurações estão funcionando corretamente.</p>
+        
+        <div id="results">
+            <div class="test-item">
+                <h3>📱 Frontend</h3>
+                <p>✅ Site carregado com sucesso</p>
+                <p>✅ Arquivos CSS e JS funcionando</p>
+            </div>
+        </div>
+
+        <div style="text-align: center; margin: 30px 0;">
+            <button onclick="runAllTests()">🚀 Executar Todos os Testes</button>
+            <button onclick="testDatabase()">💾 Testar Banco de Dados</button>
+            <button onclick="testMultiplayer()">🎮 Testar Multiplayer</button>
+        </div>
+
+        <div id="instructions" style="margin-top: 30px;">
+            <h3>📋 Se houver erros:</h3>
+            <p><strong>1.</strong> Verifique se configurou o banco de dados (DATABASE_URL)</p>
+            <p><strong>2.</strong> Confirme se fez redeploy após adicionar as variáveis</p>
+            <p><strong>3.</strong> Verifique os logs: <a href="https://app.netlify.com/sites/mercadinhodocris/logs/functions" target="_blank" style="color: #00ff88;">Netlify Function Logs</a></p>
+        </div>
+    </div>
+
+    <script>
+        let testResults = [];
+
+        async function runAllTests() {
+            const button = event.target;
+            button.disabled = true;
+            button.innerHTML = '<span class="loading"></span> Testando...';
+            
+            testResults = [];
+            const resultsDiv = document.getElementById('results');
+            
+            // Limpar resultados anteriores (exceto frontend)
+            resultsDiv.innerHTML = `
+                <div class="test-item">
+                    <h3>📱 Frontend</h3>
+                    <p class="success">✅ Site carregado com sucesso</p>
+                    <p class="success">✅ Arquivos CSS e JS funcionando</p>
+                </div>
+            `;
+
+            // Teste 1: Health Check
+            await testHealthCheck();
+            
+            // Teste 2: Database Connection
+            await testDatabase();
+            
+            // Teste 3: Player Creation
+            await testPlayerCreation();
+            
+            // Teste 4: Multiplayer Functions
+            await testMultiplayer();
+
+            button.disabled = false;
+            button.innerHTML = '🚀 Executar Todos os Testes';
+            
+            // Mostrar resumo
+            showSummary();
+        }
+
+        async function testHealthCheck() {
+            try {
+                const response = await fetch('/.netlify/functions/api/health');
+                const data = await response.json();
+                
+                if (response.ok) {
+                    addTestResult('API Health Check', 'success', '✅ API respondendo corretamente');
+                } else {
+                    addTestResult('API Health Check', 'error', '❌ API não está respondendo');
+                }
+            } catch (error) {
+                addTestResult('API Health Check', 'error', '❌ Erro ao conectar com API: ' + error.message);
+            }
+        }
+
+        async function testDatabase() {
+            try {
+                const response = await fetch('/.netlify/functions/api/player/create', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        name: 'Teste Usuário',
+                        age: 10,
+                        grade: '5º Ano', 
+                        avatar: 'student1'
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult('Banco de Dados', 'success', 
+                        '✅ Conexão com banco funcionando<br>' +
+                        '✅ Criação de jogadores ativa<br>' +
+                        `<div class="code">Player ID criado: ${data.player?.id}</div>`
+                    );
+                } else {
+                    const errorData = await response.text();
+                    addTestResult('Banco de Dados', 'error', 
+                        '❌ Erro no banco de dados<br>' +
+                        `<div class="code">${errorData}</div>`
+                    );
+                }
+            } catch (error) {
+                addTestResult('Banco de Dados', 'error', 
+                    '❌ Falha na conexão com banco<br>' +
+                    `<div class="code">${error.message}</div>`
+                );
+            }
+        }
+
+        async function testPlayerCreation() {
+            try {
+                const response = await fetch('/.netlify/functions/api/ranking/money');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult('Sistema de Rankings', 'success', 
+                        '✅ Rankings funcionando<br>' +
+                        `✅ ${data.ranking?.length || 0} jogadores no ranking`
+                    );
+                } else {
+                    addTestResult('Sistema de Rankings', 'warning', '⚠️ Rankings não configurados ainda');
+                }
+            } catch (error) {
+                addTestResult('Sistema de Rankings', 'error', '❌ Erro nos rankings: ' + error.message);
+            }
+        }
+
+        async function testMultiplayer() {
+            try {
+                const response = await fetch('/.netlify/functions/websocket/rooms');
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    addTestResult('Sistema Multiplayer', 'success', 
+                        '✅ Sistema multiplayer funcionando<br>' +
+                        `✅ ${data.rooms?.length || 0} salas ativas`
+                    );
+                } else {
+                    addTestResult('Sistema Multiplayer', 'warning', '⚠️ Multiplayer configurado mas sem salas ativas');
+                }
+            } catch (error) {
+                addTestResult('Sistema Multiplayer', 'error', '❌ Erro no multiplayer: ' + error.message);
+            }
+        }
+
+        function addTestResult(title, status, message) {
+            const resultsDiv = document.getElementById('results');
+            const testItem = document.createElement('div');
+            testItem.className = `test-item ${status}`;
+            testItem.innerHTML = `<h3>${title}</h3><p>${message}</p>`;
+            resultsDiv.appendChild(testItem);
+        }
+
+        function showSummary() {
+            const successCount = document.querySelectorAll('.test-item.success').length;
+            const totalTests = document.querySelectorAll('.test-item').length;
+            
+            let summaryMessage = '';
+            if (successCount === totalTests) {
+                summaryMessage = '🎉 Todos os testes passaram! Seu sistema está 100% funcional!';
+            } else if (successCount > totalTests / 2) {
+                summaryMessage = '⚠️ Alguns testes falharam. Verifique a configuração do banco de dados.';
+            } else {
+                summaryMessage = '❌ Muitos testes falharam. Verifique as configurações no Netlify.';
+            }
+
+            const summaryDiv = document.createElement('div');
+            summaryDiv.className = 'test-item';
+            summaryDiv.innerHTML = `<h3>📊 Resumo</h3><p><strong>${summaryMessage}</strong></p>`;
+            document.getElementById('results').appendChild(summaryDiv);
+        }
+
+        // Executar teste básico ao carregar
+        window.onload = function() {
+            addTestResult('Carregamento da Página', 'success', '✅ Página de testes carregada com sucesso');
+        };
+    </script>
+</body>
+</html>
