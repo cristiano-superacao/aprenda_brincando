@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <defs>
+    <linearGradient id="skinGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4A574;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C19A6B;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="hairGrad2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#2C1810;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1A0F08;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Background Circle -->
+  <circle cx="50" cy="50" r="48" fill="#E3F2FD" stroke="#2196F3" stroke-width="2"/>
+  
+  <!-- Face -->
+  <circle cx="50" cy="45" r="25" fill="url(#skinGrad2)"/>
+  
+  <!-- Hair -->
+  <path d="M 25 35 Q 25 15 50 15 Q 75 15 75 35 Q 70 25 60 28 Q 55 22 50 22 Q 45 22 40 28 Q 30 25 25 35 Z" fill="url(#hairGrad2)"/>
+  
+  <!-- Eyes -->
+  <circle cx="42" cy="40" r="3" fill="#1976D2"/>
+  <circle cx="58" cy="40" r="3" fill="#1976D2"/>
+  <circle cx="43" cy="39" r="1" fill="#FFFFFF"/>
+  <circle cx="59" cy="39" r="1" fill="#FFFFFF"/>
+  
+  <!-- Glasses -->
+  <circle cx="42" cy="40" r="6" fill="none" stroke="#424242" stroke-width="2"/>
+  <circle cx="58" cy="40" r="6" fill="none" stroke="#424242" stroke-width="2"/>
+  <path d="M 48 40 L 52 40" stroke="#424242" stroke-width="2"/>
+  
+  <!-- Nose -->
+  <circle cx="50" cy="47" r="1.5" fill="#C19A6B"/>
+  
+  <!-- Mouth -->
+  <path d="M 44 53 Q 50 58 56 53" stroke="#4CAF50" stroke-width="2" fill="none" stroke-linecap="round"/>
+  
+  <!-- Body -->
+  <ellipse cx="50" cy="75" rx="15" ry="20" fill="#2196F3"/>
+  
+  <!-- Arms -->
+  <circle cx="35" cy="65" r="5" fill="url(#skinGrad2)"/>
+  <circle cx="65" cy="65" r="5" fill="url(#skinGrad2)"/>
+  
+  <!-- Tools (wrench) -->
+  <path d="M 30 62 L 38 70" stroke="#FF9800" stroke-width="3" stroke-linecap="round"/>
+  <circle cx="32" cy="64" r="2" fill="#FF9800"/>
+  
+  <!-- Gear decoration -->
+  <circle cx="50" cy="8" r="5" fill="#FF9800"/>
+  <path d="M45,8 L47,5 L53,5 L55,8 L55,8 L53,11 L47,11 L45,8 Z" fill="#FF5722"/>
+</svg>

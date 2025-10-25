@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprenda Brincando - Aventura Educativa</title>
+    <meta name="description" content="Jogo educativo multiplayer para crianças aprenderem brincando com matemática, português e muito mais!">
+    
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@300;400;500;600;700&family=Comic+Neue:wght@300;400;700&display=swap" rel="stylesheet">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/welcome.css">
+    <link rel="stylesheet" href="styles/avatars.css">
+    <link rel="stylesheet" href="styles/components.css">
+</head>
+<body class="welcome-page">
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="floating-shapes">
+            <div class="shape shape-1">🌟</div>
+            <div class="shape shape-2">🚀</div>
+            <div class="shape shape-3">📚</div>
+            <div class="shape shape-4">🎯</div>
+            <div class="shape shape-5">💎</div>
+            <div class="shape shape-6">🏆</div>
+            <div class="shape shape-7">⭐</div>
+            <div class="shape shape-8">🎊</div>
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="welcome-header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">🎮</span>
+                <h1>Aprenda Brincando</h1>
+            </div>
+            <nav class="top-nav">
+                <button class="nav-btn" onclick="showSection('about')">
+                    <span>ℹ️</span> Sobre
+                </button>
+                <button class="nav-btn" onclick="showSection('parents')">
+                    <span>👨‍👩‍👧‍👦</span> Para Pais
+                </button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="welcome-main">
+        <!-- Hero Section -->
+        <section id="hero" class="hero-section active">
+            <div class="container">
+                <div class="hero-content">
+                    <div class="hero-text">
+                        <h2 class="hero-title">
+                            <span class="title-line">Aventura</span>
+                            <span class="title-line highlight">Educativa</span>
+                            <span class="title-line">Multiplayer!</span>
+                        </h2>
+                        <p class="hero-description">
+                            Aprenda matemática, português e ciências jogando com seus amigos! 
+                            Escolha seu avatar favorito e comece sua jornada de aprendizado.
+                        </p>
+                        <div class="hero-stats">
+                            <div class="stat">
+                                <span class="stat-icon">👥</span>
+                                <span class="stat-text">Multiplayer</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-icon">🏆</span>
+                                <span class="stat-text">Rankings</span>
+                            </div>
+                            <div class="stat">
+                                <span class="stat-icon">🎯</span>
+                                <span class="stat-text">Missões</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="hero-avatars">
+                        <div class="avatars-grid">
+                            <div class="avatar-preview" data-avatar="student1">
+                                <div class="avatar-circle">
+                                    <img src="images/avatars/student1.svg" alt="Ana">
+                                </div>
+                                <span class="avatar-name">Ana</span>
+                            </div>
+                            <div class="avatar-preview" data-avatar="student2">
+                                <div class="avatar-circle">
+                                    <img src="images/avatars/student2.svg" alt="João">
+                                </div>
+                                <span class="avatar-name">João</span>
+                            </div>
+                            <div class="avatar-preview" data-avatar="student3">
+                                <div class="avatar-circle">
+                                    <img src="images/avatars/student3.svg" alt="Maria">
+                                </div>
+                                <span class="avatar-name">Maria</span>
+                            </div>
+                            <div class="avatar-preview" data-avatar="student4">
+                                <div class="avatar-circle">
+                                    <img src="images/avatars/student4.svg" alt="Pedro">
+                                </div>
+                                <span class="avatar-name">Pedro</span>
+                            </div>
+                            <div class="avatar-preview" data-avatar="student5">
+                                <div class="avatar-circle">
+                                    <img src="images/avatars/student5.svg" alt="Sofia">
+                                </div>
+                                <span class="avatar-name">Sofia</span>
+                            </div>
+                            <div class="avatar-preview" data-avatar="student6">
+                                <div class="avatar-circle">
+                                    <img src="images/avatars/student6.svg" alt="Lucas">
+                                </div>
+                                <span class="avatar-name">Lucas</span>
+                            </div>
+                        </div>
+                        
+                        <button class="start-btn" onclick="showSection('register')">
+                            <span class="btn-icon">🚀</span>
+                            <span class="btn-text">Começar Aventura</span>
+                            <div class="btn-glow"></div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Registration Section -->
+        <section id="register" class="register-section">
+            <div class="container">
+                <button class="back-btn" onclick="showSection('hero')">
+                    <span>←</span> Voltar
+                </button>
+                
+                <div class="register-content">
+                    <div class="register-header">
+                        <h2>Crie seu Perfil de Aventureiro!</h2>
+                        <p>Escolha seu avatar e conte um pouco sobre você</p>
+                    </div>
+                    
+                    <form id="registerForm" class="register-form">
+                        <div class="form-step active" id="step1">
+                            <h3>👋 Como você se chama?</h3>
+                            <div class="input-group">
+                                <input type="text" id="playerName" name="name" placeholder="Digite seu nome" required>
+                                <span class="input-icon">👤</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-step" id="step2">
+                            <h3>🎂 Quantos anos você tem?</h3>
+                            <div class="age-selector">
+                                <button type="button" class="age-btn" data-age="5">5 anos</button>
+                                <button type="button" class="age-btn" data-age="6">6 anos</button>
+                                <button type="button" class="age-btn" data-age="7">7 anos</button>
+                                <button type="button" class="age-btn" data-age="8">8 anos</button>
+                                <button type="button" class="age-btn" data-age="9">9 anos</button>
+                                <button type="button" class="age-btn" data-age="10">10 anos</button>
+                                <button type="button" class="age-btn" data-age="11">11 anos</button>
+                                <button type="button" class="age-btn" data-age="12">12 anos</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-step" id="step3">
+                            <h3>📚 Em que ano você estuda?</h3>
+                            <div class="grade-selector">
+                                <button type="button" class="grade-btn" data-grade="1º Ano">1º Ano</button>
+                                <button type="button" class="grade-btn" data-grade="2º Ano">2º Ano</button>
+                                <button type="button" class="grade-btn" data-grade="3º Ano">3º Ano</button>
+                                <button type="button" class="grade-btn" data-grade="4º Ano">4º Ano</button>
+                                <button type="button" class="grade-btn" data-grade="5º Ano">5º Ano</button>
+                                <button type="button" class="grade-btn" data-grade="6º Ano">6º Ano</button>
+                                <button type="button" class="grade-btn" data-grade="7º Ano">7º Ano</button>
+                            </div>
+                        </div>
+                        
+                        <div class="form-step" id="step4">
+                            <h3>🎨 Escolha seu Avatar Favorito!</h3>
+                            <div class="avatar-selection">
+                                <div class="avatar-grid">
+                                    <div class="avatar-option" data-avatar="student1">
+                                        <div class="avatar-card">
+                                            <img src="images/avatars/student1.svg" alt="Ana - Exploradora">
+                                            <h4>Ana</h4>
+                                            <p>Exploradora</p>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-option" data-avatar="student2">
+                                        <div class="avatar-card">
+                                            <img src="images/avatars/student2.svg" alt="João - Inventor">
+                                            <h4>João</h4>
+                                            <p>Inventor</p>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-option" data-avatar="student3">
+                                        <div class="avatar-card">
+                                            <img src="images/avatars/student3.svg" alt="Maria - Cientista">
+                                            <h4>Maria</h4>
+                                            <p>Cientista</p>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-option" data-avatar="student4">
+                                        <div class="avatar-card">
+                                            <img src="images/avatars/student4.svg" alt="Pedro - Aventureiro">
+                                            <h4>Pedro</h4>
+                                            <p>Aventureiro</p>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-option" data-avatar="student5">
+                                        <div class="avatar-card">
+                                            <img src="images/avatars/student5.svg" alt="Sofia - Artista">
+                                            <h4>Sofia</h4>
+                                            <p>Artista</p>
+                                        </div>
+                                    </div>
+                                    <div class="avatar-option" data-avatar="student6">
+                                        <div class="avatar-card">
+                                            <img src="images/avatars/student6.svg" alt="Lucas - Esportista">
+                                            <h4>Lucas</h4>
+                                            <p>Esportista</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-controls">
+                            <button type="button" id="prevBtn" class="control-btn prev-btn" onclick="previousStep()">
+                                <span>←</span> Anterior
+                            </button>
+                            <div class="progress-dots">
+                                <span class="dot active"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                                <span class="dot"></span>
+                            </div>
+                            <button type="button" id="nextBtn" class="control-btn next-btn" onclick="nextStep()">
+                                Próximo <span>→</span>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="about-section">
+            <div class="container">
+                <button class="back-btn" onclick="showSection('hero')">
+                    <span>←</span> Voltar
+                </button>
+                
+                <div class="about-content">
+                    <h2>Sobre o Aprenda Brincando</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎮</div>
+                            <h3>Jogos Educativos</h3>
+                            <p>Aprenda matemática, português e ciências através de jogos divertidos e interativos.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">👥</div>
+                            <h3>Multiplayer</h3>
+                            <p>Jogue com seus amigos em tempo real e compete em rankings educativos.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">📈</div>
+                            <h3>Progresso Personalizado</h3>
+                            <p>Acompanhe seu desenvolvimento e desbloqueie novos desafios.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Parents Section -->
+        <section id="parents" class="parents-section">
+            <div class="container">
+                <button class="back-btn" onclick="showSection('hero')">
+                    <span>←</span> Voltar
+                </button>
+                
+                <div class="parents-content">
+                    <h2>Informações para os Pais</h2>
+                    <div class="info-cards">
+                        <div class="info-card">
+                            <h3>🛡️ Segurança</h3>
+                            <p>Ambiente 100% seguro, sem chat aberto, apenas interações educativas supervisionadas.</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>📊 Relatórios</h3>
+                            <p>Acompanhe o progresso de aprendizado de seus filhos com relatórios detalhados.</p>
+                        </div>
+                        <div class="info-card">
+                            <h3>🎯 Pedagogia</h3>
+                            <p>Conteúdo desenvolvido por especialistas em educação infantil e gamificação.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-content">
+            <div class="loading-avatar">
+                <img id="loadingAvatarImg" src="" alt="Avatar">
+            </div>
+            <h2>Preparando sua aventura...</h2>
+            <div class="loading-bar">
+                <div class="loading-progress"></div>
+            </div>
+            <p class="loading-text">Carregando seu perfil</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+    <script src="js/registration.js"></script>
+    <script src="js/avatars.js"></script>
+    <script src="js/welcome.js"></script>
+</body>
+</html>

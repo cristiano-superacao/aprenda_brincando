@@ -1,36 +1,71 @@
 {
-  "name": "mercadinho-cristhian",
-  "version": "1.0.0",
-  "description": "Mercadinho do Cristhian - Jogo Educativo",
-  "main": "src/server.js",
+  "name": "aprenda-brincando",
+  "version": "2.0.0",
+  "description": "Aprenda Brincando - Plataforma educacional infantil interativa com jogos e avatares personalizados",
+  "main": "public/welcome.html",
   "scripts": {
     "start": "node src/server.js",
     "build": "echo 'Build completed - static site ready'",
-    "dev": "node src/server.js",
+    "dev": "netlify dev",
+    "serve": "cd public && python -m http.server 8000",
     "multiplayer": "node src/websocket-server.js",
     "start:full": "npm run multiplayer & npm run start",
     "test": "python teste-mercadinho.py",
-    "deploy": "netlify deploy --prod --dir=public"
+    "deploy": "netlify deploy --prod --dir=public",
+    "setup-db": "node setup-neon.js",
+    "auto-setup": "node auto-setup.js",
+    "test-db": "node -e \"const client = require('./setup-neon.js'); const c = new client(); c.testConnection();\"",
+    "lint": "echo 'Linting será implementado em breve'",
+    "format": "echo 'Formatação será implementada em breve'"
   },
   "keywords": [
-    "educacao",
-    "financeira",
+    "educação",
+    "infantil",
+    "jogos",
+    "aprendizado",
+    "interativo",
+    "multiplayer",
+    "avatares",
     "criancas",
-    "mercadinho",
-    "cristhian"
+    "SENAI"
   ],
-  "author": "Mercadinho do Cristhian",
+  "author": "Equipe Aprenda Brincando - SENAI 2025",
   "license": "MIT",
   "dependencies": {
-    "@neondatabase/serverless": "^0.9.0",
+    "@neondatabase/serverless": "^0.9.5",
     "cors": "^2.8.5",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.6.1",
     "express": "^4.18.2",
-    "ws": "^8.18.3",
     "pg": "^8.11.3",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "ws": "^8.18.3"
   },
   "engines": {
     "node": ">=18.0.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead",
+    "not ie 11"
+  ],
+  "config": {
+    "target_age_range": "6-16",
+    "supported_languages": ["pt-BR"],
+    "features": {
+      "multiplayer": true,
+      "offline_mode": false,
+      "analytics": false,
+      "sound": true,
+      "accessibility": true,
+      "avatar_system": true,
+      "registration_flow": true
+    }
+  },
+  "metadata": {
+    "last_updated": "2024-12-19",
+    "version_notes": "Interface completamente redesenhada com foco infantil, sistema de avatares e fluxo de registro",
+    "deployment_url": "https://mercadinhodocris.netlify.app",
+    "development_status": "Ativo - Nova versão com UI/UX infantil"
   }
 }

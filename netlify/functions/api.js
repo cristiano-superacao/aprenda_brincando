@@ -1,10 +1,26 @@
 const { Pool } = require('pg');
+const fs = require('fs');
+const path = require('path');
 
 // Configuração do banco de dados
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL,
-    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
-});
+let pool = null;
+let useOfflineMode = false;
+
+try {
+    if (process.env.DATABASE_URL && !process.env.DATABASE_URL.includes('example')) {
+        pool = new Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false
+        });
+        console.log('✅ Conectado ao banco Neon');
+    } else {
+        console.log('⚠️ Usando modo offline');
+        useOfflineMode = true;
+    }
+} catch (error) {
+    console.log('⚠️ Erro na conexão, usando modo offline:', error.message);
+    useOfflineMode = true;
+}
 
 // Headers CORS
 const headers = {
@@ -12,6 +28,25 @@ const headers = {
     'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS'
 };
+
+// Carregar dados offline
+function loadOfflineData() {
+    try {
+        const dataPath = path.join(__dirname, '../../public/data/mock-database.json');
+        if (fs.existsSync(dataPath)) {
+            const data = JSON.parse(fs.readFileSync(dataPath, 'utf8'));
+            return data;
+        }
+    } catch (error) {
+        console.error('Erro ao carregar dados offline:', error.message);
+    }
+    
+    return {
+        players: [],
+        rankings: { money: [], level: [], investments: [] },
+        gameConfig: { isOffline: true, version: '2.0.0' }
+    };
+}
 
 exports.handler = async (event, context) => {
     // Responder a requisições OPTIONS (CORS preflight)
@@ -92,23 +127,45 @@ async function createPlayer(data) {
         };
     }
 
-    const result = await pool.query(
-        `INSERT INTO players (name, age, grade, avatar, balance, experience, level, inventory, stats, multiplayer_stats) 
-         VALUES ($1, $2, $3, $4, 50.00, 0, 1, '{}', '{}', '{}') 
-         RETURNING *`,
-        [name, age, grade, avatar]
-    );
+    let player;
 
-    const player = result.rows[0];
+    if (useOfflineMode) {
+        // Modo offline - simular criação
+        player = {
+            id: Date.now(),
+            name,
+            age,
+            grade,
+            avatar,
+            balance: 50.00,
+            experience: 0,
+            level: 1,
+            inventory: {},
+            stats: {},
+            multiplayer_stats: {},
+            created_at: new Date().toISOString(),
+            isOffline: true
+        };
+    } else {
+        const result = await pool.query(
+            `INSERT INTO players (name, age, grade, avatar, balance, experience, level, inventory, stats, multiplayer_stats) 
+             VALUES ($1, $2, $3, $4, 50.00, 0, 1, '{}', '{}', '{}') 
+             RETURNING *`,
+            [name, age, grade, avatar]
+        );
+        player = result.rows[0];
+    }
 
     // Criar entradas no ranking
-    await pool.query(
-        `INSERT INTO rankings (player_id, category, value) VALUES 
-         ($1, 'money', $2),
-         ($1, 'level', $3),
-         ($1, 'investments', 0.00)`,
-        [player.id, player.balance, player.level]
-    );
+    if (!useOfflineMode) {
+        await pool.query(
+            `INSERT INTO rankings (player_id, category, value) VALUES 
+             ($1, 'money', $2),
+             ($1, 'level', $3),
+             ($1, 'investments', 0.00)`,
+            [player.id, player.balance, player.level]
+        );
+    }
 
     return {
         statusCode: 201,
@@ -135,23 +192,42 @@ async function createPlayer(data) {
 
 // Função para buscar jogador
 async function getPlayer(id) {
-    const result = await pool.query('SELECT * FROM players WHERE id = $1', [id]);
+    let player;
 
-    if (result.rows.length === 0) {
-        return {
-            statusCode: 404,
-            headers,
-            body: JSON.stringify({ error: 'Jogador não encontrado' })
-        };
+    if (useOfflineMode) {
+        const data = loadOfflineData();
+        player = data.players.find(p => p.id == id);
+        
+        if (!player) {
+            return {
+                statusCode: 404,
+                headers,
+                body: JSON.stringify({ error: 'Jogador não encontrado' })
+            };
+        }
+        
+        // Simular atualização de último login
+        player.last_login = new Date().toISOString();
+        player.isOffline = true;
+    } else {
+        const result = await pool.query('SELECT * FROM players WHERE id = $1', [id]);
+
+        if (result.rows.length === 0) {
+            return {
+                statusCode: 404,
+                headers,
+                body: JSON.stringify({ error: 'Jogador não encontrado' })
+            };
+        }
+
+        player = result.rows[0];
+
+        // Atualizar último login
+        await pool.query(
+            'UPDATE players SET last_login = CURRENT_TIMESTAMP WHERE id = $1',
+            [id]
+        );
     }
-
-    const player = result.rows[0];
-
-    // Atualizar último login
-    await pool.query(
-        'UPDATE players SET last_login = CURRENT_TIMESTAMP WHERE id = $1',
-        [id]
-    );
 
     return {
         statusCode: 200,
@@ -270,6 +346,30 @@ async function getRanking(category, options) {
             statusCode: 400,
             headers,
             body: JSON.stringify({ error: 'Categoria de ranking inválida' })
+        };
+    }
+
+    if (useOfflineMode) {
+        const data = loadOfflineData();
+        let ranking = data.rankings[category] || [];
+        
+        // Filtrar por grade se especificado
+        if (grade) {
+            ranking = ranking.filter(item => item.player.grade === grade);
+        }
+        
+        // Limitar resultados
+        ranking = ranking.slice(0, limit);
+        
+        return {
+            statusCode: 200,
+            headers,
+            body: JSON.stringify({
+                success: true,
+                category,
+                ranking,
+                isOffline: true
+            })
         };
     }
 
